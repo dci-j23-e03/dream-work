@@ -1,6 +1,6 @@
 package com.dreamwork.service;
 
-import com.dreamwork.Repository.RecruiterRepository;
+import com.dreamwork.repository.RecruiterRepository;
 import com.dreamwork.model.job.Role;
 import com.dreamwork.model.user.Recruiter;
 import org.springframework.stereotype.Service;
