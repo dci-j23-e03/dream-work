@@ -2,6 +2,7 @@ package com.dreamwork.model.user;
 
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.job.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -17,6 +18,7 @@ public class Recruiter extends User {
   private String companyName;
 
   @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
+  @JsonIgnore
   private List<JobAd> jobAds;
 
   public Recruiter(String username, String password, String name, String lastname, String companyName) {
@@ -24,5 +26,6 @@ public class Recruiter extends User {
     this.companyName = companyName;
   }
 
-  public Recruiter() {}
+  public Recruiter() {
+  }
 }

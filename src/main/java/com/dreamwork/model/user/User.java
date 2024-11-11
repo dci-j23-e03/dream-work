@@ -10,7 +10,6 @@ import lombok.Setter;
 @MappedSuperclass
 public abstract class User {
 
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userId;
@@ -23,7 +22,7 @@ public abstract class User {
   @Enumerated(EnumType.STRING)
   private Role role;
 
-  public User(String username, String password, String name, String lastname, Role role) {
+  protected User(String username, String password, String name, String lastname, Role role) {
     this.username = username;
     this.password = password;
     this.name = name;
@@ -31,5 +30,6 @@ public abstract class User {
     this.role = role;
   }
 
-  public User() {}
+  protected User() {
+  }
 }

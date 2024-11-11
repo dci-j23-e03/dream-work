@@ -2,6 +2,7 @@ package com.dreamwork.model.user;
 
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.job.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -18,8 +19,9 @@ public class Candidate extends User {
   private String country;
 
   @ManyToMany
-  @JoinTable(name = "applied_jobs", joinColumns = @JoinColumn(name = "candidate_id"),
-  inverseJoinColumns = @JoinColumn(name = "job_ad_id"))
+  @JoinTable(name = "applied_jobs", joinColumns = @JoinColumn(name = "candidate_id"), 
+             inverseJoinColumns = @JoinColumn(name = "job_ad_id"))
+  @JsonManagedReference
   private List<JobAd> appliedJobAds;
 
   public Candidate(String username, String password, String name, String lastname, String country) {
@@ -27,5 +29,6 @@ public class Candidate extends User {
     this.country = country;
   }
 
-  public Candidate() {}
+  public Candidate() {
+  }
 }

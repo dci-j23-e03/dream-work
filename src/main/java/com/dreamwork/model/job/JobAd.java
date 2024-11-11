@@ -2,6 +2,8 @@ package com.dreamwork.model.job;
 
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -36,9 +38,11 @@ public class JobAd {
 
   @ManyToOne
   @JoinColumn(name = "recruiter_id", referencedColumnName = "userId")
+  @JsonManagedReference
   private Recruiter recruiter;
 
   @ManyToMany(mappedBy = "appliedJobAds")
+  @JsonBackReference
   private List<Candidate> candidates;
 
   public JobAd(String position, String country, String city, Seniority seniority,
@@ -52,5 +56,6 @@ public class JobAd {
     this.recruiter = recruiter;
   }
 
-  public JobAd() {}
+  public JobAd() {
+  }
 }
