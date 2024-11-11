@@ -18,12 +18,11 @@ public class Candidate extends User {
   private String country;
 
   @ManyToMany
-  @JoinTable(name = "candidate_job_ads", joinColumns = @JoinColumn(name = "candidate_id"),
+  @JoinTable(name = "applied_jobs", joinColumns = @JoinColumn(name = "candidate_id"),
   inverseJoinColumns = @JoinColumn(name = "job_ad_id"))
   private List<JobAd> appliedJobAds;
 
-  public Candidate(String username, String password, String name, String lastname,
-      String role, String country) {
+  public Candidate(String username, String password, String name, String lastname, String country) {
     super(username, password, name, lastname, Role.CANDIDATE);
     this.country = country;
   }

@@ -35,7 +35,7 @@ public class JobAd {
   private String description;
 
   @ManyToOne
-  @JoinColumn(name = "recruiter_id", referencedColumnName = "recruiterId")
+  @JoinColumn(name = "recruiter_id", referencedColumnName = "userId")
   private Recruiter recruiter;
 
   @ManyToMany(mappedBy = "appliedJobAds")
