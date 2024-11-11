@@ -21,8 +21,7 @@ public class Recruiter extends User {
   @JsonIgnore
   private List<JobAd> jobAds;
 
-  public Recruiter(String username, String password, String name, String lastname,
-      String companyName) {
+  public Recruiter(String username, String password, String name, String lastname, String companyName) {
     super(username, password, name, lastname, Role.RECRUITER);
     this.companyName = companyName;
   }

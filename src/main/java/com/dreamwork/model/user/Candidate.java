@@ -19,8 +19,8 @@ public class Candidate extends User {
   private String country;
 
   @ManyToMany
-  @JoinTable(name = "applied_jobs", joinColumns = @JoinColumn(name = "candidate_id"),
-      inverseJoinColumns = @JoinColumn(name = "job_ad_id"))
+  @JoinTable(name = "applied_jobs", joinColumns = @JoinColumn(name = "candidate_id"), 
+             inverseJoinColumns = @JoinColumn(name = "job_ad_id"))
   @JsonManagedReference
   private List<JobAd> appliedJobAds;
 
