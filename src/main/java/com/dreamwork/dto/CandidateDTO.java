@@ -3,13 +3,16 @@ package com.dreamwork.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
+import java.util.List;
+
 @Getter
+@Setter
 public class CandidateDTO {
 
   private String name;
   private String lastname;
   private String country;
+  private List<JobAdDTO> appliedJobAds;
 
   public CandidateDTO(String name, String lastName, String country) {
     this.name = name;

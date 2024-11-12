@@ -1,10 +1,13 @@
 package com.dreamwork.controller;
 
+import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,56 +22,50 @@ public class CandidateController {
         this.candidateService = candidateService;
     }
 
-    @GetMapping
-    public List<Candidate> getAllCandidates() {
-        return candidateService.getAllCandidates();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Candidate> getCandidateById(@PathVariable Long id) {
-        return candidateService.getCandidateById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
 
     @PostMapping
-    public Candidate createCandidate(@RequestBody Candidate candidate) {
-        return candidateService.saveCandidate(candidate);
+    public ResponseEntity<Candidate> createCandidate(@RequestBody Candidate candidate) {
+        try {
+            Candidate createdCandidate = candidateService.createCandidate(candidate);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdCandidate);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Candidate> updateCandidate(@PathVariable Long id, @RequestBody Candidate updatedCandidate) {
-        return candidateService.getCandidateById(id)
-                .map(existingCandidate -> {
-                    existingCandidate.setUsername(updatedCandidate.getUsername());
-                    existingCandidate.setPassword(updatedCandidate.getPassword());
-                    existingCandidate.setName(updatedCandidate.getName());
-                    existingCandidate.setLastname(updatedCandidate.getLastname());
-                    existingCandidate.setCountry(updatedCandidate.getCountry());
-                    return ResponseEntity.ok(candidateService.saveCandidate(existingCandidate));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @PutMapping("/{candidateId}")
+    public ResponseEntity<Candidate> updateCandidate(@PathVariable Long candidateId, @RequestBody Candidate updatedCandidate) {
+        try {
+            Candidate candidate = candidateService.updateCandidate(candidateId, updatedCandidate);
+            return ResponseEntity.ok(candidate);
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+    @GetMapping("/job/{jobAdId}")
+    public ResponseEntity<List<CandidateDTO>> getCandidatesByJobId(@PathVariable Long jobAdId) {
+        try {
+            List<CandidateDTO> candidates = candidateService.getCandidatesByJobId(jobAdId);
+            return ResponseEntity.ok(candidates);
+
+        } catch (ResponseStatusException e){
+            return ResponseEntity.status(e.getStatusCode()).build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Candidate> deleteCandidate(@PathVariable Long id) {
-        if (candidateService.getCandidateById(id).isPresent()) {
+        try {
             candidateService.deleteCandidate(id);
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).build();
         }
     }
-
-//    @PostMapping("/{candidateId}/apply/{jobAdId}")
-//    public ResponseEntity<Candidate> applyToJob(@PathVariable Long candidateId, @PathVariable Long jobAdId) {
-//        try {
-//            Candidate candidate = candidateService.applyToJob(candidateId, jobAdId);
-//            return ResponseEntity.ok(candidate);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
-
-
 }
