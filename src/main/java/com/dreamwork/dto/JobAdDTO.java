@@ -1,6 +1,5 @@
 package com.dreamwork.dto;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,8 +22,5 @@ public class JobAdDTO {
     this.seniority = seniority;
     this.mainTechStack = mainTechStack;
     this.description = description;
-  }
-
-  public JobAdDTO(String position, String country, String city, String string, String mainTechStack, String description, RecruiterDTO recruiterDTO, List<CandidateDTO> list) {
   }
 }
