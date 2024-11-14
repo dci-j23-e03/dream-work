@@ -2,7 +2,7 @@ package com.dreamwork.service;
 
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.user.Candidate;
-import com.dreamwork.respository.CandidateRepository;
+import com.dreamwork.repository.CandidateRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

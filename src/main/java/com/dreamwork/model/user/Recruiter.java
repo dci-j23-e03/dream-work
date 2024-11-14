@@ -28,4 +28,5 @@ public class Recruiter extends User {
 
   public Recruiter() {
   }
+
 }
