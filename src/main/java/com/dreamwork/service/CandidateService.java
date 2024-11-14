@@ -4,7 +4,6 @@ import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.repository.CandidateRepository;
-import com.dreamwork.repository.JobAdRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

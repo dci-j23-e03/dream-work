@@ -15,7 +15,7 @@ public class JobAdDTO {
   private String description;
 
   public JobAdDTO(String position, String country, String city, String seniority,
-      String mainTechStack, String description) {
+                  String mainTechStack, String description) {
     this.position = position;
     this.country = country;
     this.city = city;

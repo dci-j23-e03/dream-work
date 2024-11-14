@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Recruiter Details</title>
+</head>
+<body>
+
+  <h2>Recruiter Details</h2>
+
+      <h5 >Username:</h5>
+      <p th:text="${recruiter.username}"></p>
+
+      <h5 >First Name:</h5>
+      <p  th:text="${recruiter.name}"></p>
+
+      <h5 >Last Name:</h5>
+      <p  th:text="${recruiter.lastname}"></p>
+
+      <h5 >Company Name:</h5>
+      <p th:text="${recruiter.companyName}"></p>
+
+  <a th:href="@{/recruiters/list}">Back to Recruiter List</a>
+
+</body>
+</html>
