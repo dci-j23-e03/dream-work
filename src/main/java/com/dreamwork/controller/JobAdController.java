@@ -1,9 +1,6 @@
 package com.dreamwork.controller;
 
-import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
-import com.dreamwork.dto.RecruiterDTO;
-import com.dreamwork.model.job.JobAd;
 import com.dreamwork.service.JobAdService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/job-ads")
+@RequestMapping("/job-ads")
 public class JobAdController {
 
   private final JobAdService jobAdService;
@@ -29,51 +27,21 @@ public class JobAdController {
 
   @GetMapping
   public ResponseEntity<List<JobAdDTO>> getAllJobAds() {
-    List<JobAd> jobAds = jobAdService.getAllJobAds();
-
-    List<JobAdDTO> jobAdDTOs = jobAds.stream()
-        .map(jobAd -> new JobAdDTO(
-            jobAd.getPosition(),
-            jobAd.getCountry(),
-            jobAd.getCity(),
-            jobAd.getSeniority().toString(),
-            jobAd.getMainTechStack(),
-            jobAd.getDescription(),
-            new RecruiterDTO(
-                jobAd.getRecruiter().getName(),
-                jobAd.getRecruiter().getLastname(),
-                jobAd.getRecruiter().getCompanyName()),
-            jobAd.getCandidates().stream()
-                .map(candidate -> new CandidateDTO(
-                    candidate.getName(),
-                    candidate.getLastname(),
-                    candidate.getCountry()))
-                .toList()
-        ))
-        .toList();
-
+    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds();
     return ResponseEntity.ok(jobAdDTOs);
   }
 
   @PostMapping
-  public ResponseEntity<Object> createJobAd(@RequestBody JobAdDTO jobAdDto,
+  public ResponseEntity<JobAdDTO> createJobAd(@RequestBody JobAdDTO jobAdDto,
       @RequestParam Long recruiterId) {
-    try {
-      JobAd createdJobAd = jobAdService.createJobAd(jobAdDto, recruiterId);
-      return ResponseEntity.status(HttpStatus.CREATED).body(createdJobAd);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-    }
+    jobAdService.createJobAd(jobAdDto, recruiterId);
+    return ResponseEntity.status(HttpStatus.CREATED).body(jobAdDto);
   }
 
   @PostMapping("/{jobAdId}/apply")
   public ResponseEntity<String> applyToJob(@PathVariable Long jobAdId,
-      @RequestParam Long candidateId) {
-    try {
-      jobAdService.applyToJob(jobAdId, candidateId);
-      return ResponseEntity.status(HttpStatus.CREATED).body("Applied successfully.");
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-    }
+      @RequestParam Long candidateId, @RequestParam MultipartFile cvFile) {
+    jobAdService.applyToJob(jobAdId, candidateId, cvFile);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Applied successfully.");
   }
 }
