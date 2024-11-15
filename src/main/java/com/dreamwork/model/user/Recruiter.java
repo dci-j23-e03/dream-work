@@ -4,7 +4,6 @@ import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.job.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import java.util.List;
@@ -16,7 +15,7 @@ import lombok.Setter;
 @Entity
 public class Recruiter extends User {
 
-  @Column(nullable = false)
+//  @Column(nullable = false)
   private String companyName;
 
   @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
@@ -31,5 +30,4 @@ public class Recruiter extends User {
 
   public Recruiter() {
   }
-
 }

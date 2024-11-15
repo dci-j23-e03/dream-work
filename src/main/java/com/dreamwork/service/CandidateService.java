@@ -1,78 +1,89 @@
 package com.dreamwork.service;
 
-import com.dreamwork.dto.CandidateDTO;
+import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.dto.RecruiterDTO;
+import com.dreamwork.dto.UserDTO;
+import com.dreamwork.exception.UserAlreadyExistsException;
+import com.dreamwork.exception.UserNotFoundException;
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.repository.CandidateRepository;
-import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CandidateService {
 
-    private final CandidateRepository candidateRepository;
-    private final JobAdRepository jobAdRepository;
+  private final CandidateRepository candidateRepository;
 
-    @Autowired
-    public CandidateService(CandidateRepository candidateRepository, JobAdRepository jobAdRepository) {
-        this.candidateRepository = candidateRepository;
-        this.jobAdRepository = jobAdRepository;
+  @Autowired
+  public CandidateService(@Autowired CandidateRepository candidateRepository) {
+    this.candidateRepository = candidateRepository;
+  }
+
+  @Transactional
+  public void saveCandidate(UserDTO user) {
+    Optional<Candidate> existingCandidate = candidateRepository
+        .findByUsername(user.getUsername());
+    if (existingCandidate.isPresent()) {
+      throw new UserAlreadyExistsException("Username already exists!");
     }
 
-    @Transactional
-    public Candidate createCandidate(Candidate candidate) {
-        return candidateRepository.save(candidate);
+    candidateRepository.save(new Candidate(
+        user.getUsername(),
+        user.getPassword(),
+        user.getName(),
+        user.getLastname(),
+        null));
+  }
+
+  // Needs proper implementation
+  @Transactional
+  public Candidate updateCandidate(Long candidateId, Candidate updatedCandidate) {
+    Candidate existingCandidate = candidateRepository.findById(candidateId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "Candidate with id " + candidateId + " not found"));
+
+    existingCandidate.setName(updatedCandidate.getName());
+    existingCandidate.setLastname(updatedCandidate.getLastname());
+    existingCandidate.setCountry(updatedCandidate.getCountry());
+
+    return candidateRepository.save(existingCandidate);
+  }
+
+  @Transactional
+  public void deleteCandidate(Long candidateId) {
+    candidateRepository.deleteById(candidateId);
+  }
+
+  @Transactional(readOnly = true)
+  public List<JobAdDTO> getAllJobAdsByCandidateId(Long candidateId) {
+    Optional<Candidate> candidateOpt = candidateRepository.findById(candidateId);
+    if (candidateOpt.isEmpty()) {
+      throw new UserNotFoundException("Candidate does not exist!");
     }
 
-    @Transactional
-    public Candidate updateCandidate(Long candidateId, Candidate updatedCandidate) {
-        Candidate existingCandidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate with id " + candidateId + " not found"));
+    Candidate candidate = candidateOpt.get();
+    List<JobAd> appliedJobAds = candidate.getAppliedJobAds();
 
-        existingCandidate.setName(updatedCandidate.getName());
-        existingCandidate.setLastname(updatedCandidate.getLastname());
-        existingCandidate.setCountry(updatedCandidate.getCountry());
-
-        return candidateRepository.save(existingCandidate);
-    }
-
-    public Candidate getCandidateById(Long id) {
-        return candidateRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate with id " + id + " not found"));
-    }
-
-    public List<CandidateDTO> getCandidatesByJobId(Long jobAdId) {
-        JobAd jobAd = jobAdRepository.findById(jobAdId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Ad with id " + jobAdId + " not found"));
-
-        List<CandidateDTO> candidatePublicView = jobAd.getCandidates().stream()
-                .map(candidate -> new CandidateDTO(
-                        candidate.getName(),
-                        candidate.getLastname(),
-                        candidate.getCountry()))
-                .collect(Collectors.toList());
-
-        if (jobAd.getCandidates().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No candidates applied to this job ad");
-        }
-        return candidatePublicView;
-
-    }
-
-    @Transactional
-    public void deleteCandidate(Long id) {
-        if (!candidateRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate with id " + id + " not found");
-        }
-        candidateRepository.deleteById(id);
-        if (candidateRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Candidate with id " + id + " not deleted");
-        }
-    }
-
+    return appliedJobAds.stream()
+        .map(jobAd -> new JobAdDTO(
+            jobAd.getPosition(),
+            jobAd.getCountry(),
+            jobAd.getCity(),
+            jobAd.getSeniority().toString(),
+            jobAd.getMainTechStack(),
+            jobAd.getDescription(),
+            new RecruiterDTO(
+                jobAd.getRecruiter().getName(),
+                jobAd.getRecruiter().getLastname(),
+                jobAd.getRecruiter().getCompanyName())
+        ))
+        .toList();
+  }
 }

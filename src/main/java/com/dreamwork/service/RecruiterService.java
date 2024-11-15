@@ -1,37 +1,45 @@
 package com.dreamwork.service;
 
-import com.dreamwork.repository.RecruiterRepository;
-import com.dreamwork.model.job.Role;
+import com.dreamwork.dto.CandidateDTO;
+import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.dto.UserDTO;
+import com.dreamwork.exception.UserAlreadyExistsException;
+import com.dreamwork.exception.UserNotFoundException;
+import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.user.Recruiter;
-import org.springframework.stereotype.Service;
-
+import com.dreamwork.repository.RecruiterRepository;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RecruiterService {
+
   private final RecruiterRepository recruiterRepository;
 
-  public RecruiterService(RecruiterRepository recruiterRepository) {
+  public RecruiterService(@Autowired RecruiterRepository recruiterRepository) {
     this.recruiterRepository = recruiterRepository;
   }
 
-  public List<Recruiter> getAllRecruiters() {
-    return recruiterRepository.findAll();
-  }
-
-  public Optional<Recruiter> getRecruiterById(Long id) {
-    return recruiterRepository.findById(id);
-  }
-
-  public void saveRecruiter(Recruiter recruiter) {
-    if (recruiterRepository.findByUsername(recruiter.getUsername()) != null) {
-      throw new IllegalArgumentException("Username already exists.");
+  @Transactional
+  public void saveRecruiter(UserDTO user) {
+    Optional<Recruiter> existingRecruiter = recruiterRepository.findByUsername(user.getUsername());
+    if (existingRecruiter.isPresent()) {
+      throw new UserAlreadyExistsException("Username already exists!");
     }
-    recruiter.setRole(Role.RECRUITER);
-    recruiterRepository.save(recruiter);
+
+    recruiterRepository.save(new Recruiter(
+        user.getUsername(),
+        user.getPassword(),
+        user.getName(),
+        user.getLastname(),
+        null));
   }
 
+  // Needs proper implementation
+  @Transactional
   public void updateRecruiterById(Long userId, Recruiter updatedRecruiter) {
     Optional<Recruiter> existingRecruiterOptional = recruiterRepository.findById(userId);
     if (existingRecruiterOptional.isPresent()) {
@@ -44,7 +52,35 @@ public class RecruiterService {
     }
   }
 
-  public void deleteRecruiter(Long id) {
-    recruiterRepository.deleteById(id);
+  @Transactional
+  public void deleteRecruiter(Long recruiterId) {
+    recruiterRepository.deleteById(recruiterId);
+  }
+
+  @Transactional(readOnly = true)
+  public List<JobAdDTO> getAllJobAdsByRecruiterId(Long recruiterId) {
+    Optional<Recruiter> recruiterOpt = recruiterRepository.findById(recruiterId);
+    if (recruiterOpt.isEmpty()) {
+      throw new UserNotFoundException("Recruiter does not exist!");
+    }
+
+    Recruiter recruiter = recruiterOpt.get();
+    List<JobAd> jobAds = recruiter.getJobAds();
+
+    return jobAds.stream()
+        .map(jobAd -> new JobAdDTO(
+            jobAd.getPosition(),
+            jobAd.getCountry(),
+            jobAd.getCity(),
+            jobAd.getSeniority().toString(),
+            jobAd.getMainTechStack(),
+            jobAd.getDescription(),
+            jobAd.getCandidates().stream()
+                .map(candidate -> new CandidateDTO(
+                    candidate.getName(),
+                    candidate.getLastname(),
+                    candidate.getCountry()
+                )).toList()))
+        .toList();
   }
 }

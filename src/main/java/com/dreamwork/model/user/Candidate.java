@@ -3,7 +3,6 @@ package com.dreamwork.model.user;
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.job.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -18,7 +17,7 @@ import lombok.Setter;
 @Entity
 public class Candidate extends User {
 
-  @Column(nullable = false)
+//  @Column(nullable = false)
   private String country;
 
   @ManyToMany

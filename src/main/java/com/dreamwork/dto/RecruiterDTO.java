@@ -1,6 +1,5 @@
 package com.dreamwork.dto;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +10,10 @@ public class RecruiterDTO {
   private String name;
   private String lastname;
   private String companyName;
-  private List<JobAdDTO> jobAds;
 
-  public RecruiterDTO(String name, String lastName, String companyName) {
+  public RecruiterDTO(String name, String lastname, String companyName) {
     this.name = name;
-    this.lastname = lastName;
+    this.lastname = lastname;
     this.companyName = companyName;
   }
 

@@ -1,6 +1,7 @@
 package com.dreamwork.controller;
 
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.model.job.JobAd;
 import com.dreamwork.service.JobAdService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,10 @@ public class JobAdController {
   }
 
   @PostMapping
-  public ResponseEntity<JobAdDTO> createJobAd(@RequestBody JobAdDTO jobAdDto,
+  public ResponseEntity<JobAd> createJobAd(@RequestBody JobAd jobAd,
       @RequestParam Long recruiterId) {
-    jobAdService.createJobAd(jobAdDto, recruiterId);
-    return ResponseEntity.status(HttpStatus.CREATED).body(jobAdDto);
+    jobAdService.createJobAd(jobAd, recruiterId);
+    return ResponseEntity.status(HttpStatus.CREATED).body(jobAd);
   }
 
   @PostMapping("/{jobAdId}/apply")

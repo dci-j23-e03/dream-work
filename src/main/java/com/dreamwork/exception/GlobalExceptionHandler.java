@@ -16,6 +16,15 @@ public class GlobalExceptionHandler {
         e.getMessage());
   }
 
+  @ExceptionHandler(value = UserAlreadyExistsException.class)
+  public @ResponseBody ErrorResponse handleUserAlreadyExistsException(
+      UserAlreadyExistsException e) {
+    return new ErrorResponse(
+        HttpStatus.CONFLICT.value(),
+        HttpStatus.CONFLICT.getReasonPhrase(),
+        e.getMessage());
+  }
+
   @ExceptionHandler(value = JobAdNotFoundException.class)
   public @ResponseBody ErrorResponse handleJobAdNotFoundException(JobAdNotFoundException e) {
     return new ErrorResponse(

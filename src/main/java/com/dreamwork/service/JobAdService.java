@@ -1,12 +1,11 @@
 package com.dreamwork.service;
 
 import com.dreamwork.dto.JobAdDTO;
-import com.dreamwork.exception.InvalidEnumException;
-import com.dreamwork.exception.JobAdNotFoundException;
+import com.dreamwork.dto.RecruiterDTO;
 import com.dreamwork.exception.CvFileSaveException;
+import com.dreamwork.exception.JobAdNotFoundException;
 import com.dreamwork.exception.UserNotFoundException;
 import com.dreamwork.model.job.JobAd;
-import com.dreamwork.model.job.Seniority;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.repository.CandidateRepository;
@@ -46,13 +45,18 @@ public class JobAdService {
             jobAd.getCity(),
             jobAd.getSeniority().toString(),
             jobAd.getMainTechStack(),
-            jobAd.getDescription()))
+            jobAd.getDescription(),
+            new RecruiterDTO(
+                jobAd.getRecruiter().getName(),
+                jobAd.getRecruiter().getLastname(),
+                jobAd.getRecruiter().getCompanyName())
+        ))
         .toList();
   }
 
 
   @Transactional
-  public void createJobAd(JobAdDTO jobAdDto, Long recruiterId) {
+  public void createJobAd(JobAd jobAd, Long recruiterId) {
     Optional<Recruiter> recruiterOpt = recruiterRepository.findById(recruiterId);
     if (recruiterOpt.isEmpty()) {
       throw new UserNotFoundException("Recruiter does not exist!");
@@ -60,21 +64,7 @@ public class JobAdService {
 
     Recruiter recruiter = recruiterOpt.get();
 
-    Seniority seniority;
-    try {
-      seniority = Seniority.valueOf(jobAdDto.getSeniority().toUpperCase());
-    } catch (IllegalArgumentException e) {
-      throw new InvalidEnumException("Invalid seniority level: " + jobAdDto.getSeniority());
-    }
-
-    JobAd jobAd = new JobAd(
-        jobAdDto.getPosition(),
-        jobAdDto.getCountry(),
-        jobAdDto.getCity(),
-        seniority,
-        jobAdDto.getMainTechStack(),
-        jobAdDto.getDescription(),
-        recruiter);
+    jobAd.setRecruiter(recruiter);
 
     recruiter.getJobAds().add(jobAd);
 
