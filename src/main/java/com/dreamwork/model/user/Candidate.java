@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +25,7 @@ public class Candidate extends User {
   @JoinTable(name = "applied_jobs", joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "job_ad_id"))
   @JsonIgnoreProperties("candidates") // To prevent recursion when fetching JobAds that contain Candidates
-  private List<JobAd> appliedJobAds;
+  private List<JobAd> appliedJobAds = new ArrayList<>();
 
   @Lob
   private byte[] cvFile;
