@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,7 +53,7 @@ public class JobAd {
 
   @ManyToMany(mappedBy = "appliedJobAds")
   @JsonIgnoreProperties("appliedJobAds") // To avoid circular references with Candidate
-  private List<Candidate> candidates;
+  private List<Candidate> candidates = new ArrayList<>();
 
   public JobAd(String position, String country, String city, Seniority seniority,
       String mainTechStack, String description, Recruiter recruiter) {
