@@ -1,20 +1,32 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
   <title>Dream Work</title>
+  <style>
+    body {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
+<h1>Welcome to your Dream Work</h1>
+<div>
+  <a href="/register">Register</a> |
+  <a href="/login">Login</a>
+</div>
 
-<h1>  DREAM WORK   </h1>
+<div class="jobAds">
+  <h3>Available Job Ads</h3>
+  <ul>
+    <li th:each="jobAd : ${jobAds}">
+      <span th:text="${jobAd.position}"></span> at <span th:text="${jobAd.companyName}"></span>
+      <a th:href="@{/jobads/{id}(id=${jobAd.id})}">View Details</a> |
+      <form th:action="@{/jobads/{id}/apply(id=${jobAd.id})}" method="post" style="display:inline;">
+        <button type="submit">Apply</button>
+      </form>
+    </li>
+  </ul>
 
-      <h2>Register as Recruiter</h2>
-      <ol>
-
-          <li> <a th:href="@{/recruiters/register}">Register as Recruiter</a> </li>
-          <li> <a th:href="@{/recruiters/recruiter_list}">All Recruiters</a> </li>
-
-      </ol>
-
+</div>
 </body>
 </html>

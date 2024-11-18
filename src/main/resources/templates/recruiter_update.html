@@ -1,33 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>update</title>
+  <meta charset="UTF-8">
+  <title>Registration</title>
 </head>
 <body>
-<h2 >Update Recruiter</h2>
-<form th:action="@{/recruiters/update/{id}(id=${recruiter.userId})}" th:object="${recruiter}" method="post">
-    <div >
-        <label for="username">Username:</label>
-        <input type="text" th:field="*{username}" id="username">
+<div>
+  <h2>Registration</h2>
+  <form th:action="@{/recruiter_update}" th:object="${recruiter}" method="post">
+
+    <div>
+      <label for="name">First Name:</label>
+      <input type="text" th:field="*{name}" id="name" placeholder="Enter first name">
     </div>
     <div>
-        <label for="password">Password:</label>
-        <input type="password" th:field="*{password}" id="password">
+      <label for="lastname">Last Name:</label>
+      <input type="text" th:field="*{lastname}" id="lastname" placeholder="Enter last name">
     </div>
     <div>
-        <label for="name">First Name:</label>
-        <input type="text" th:field="*{name}"  id="name">
+      <label for="companyName">Company Name:</label>
+      <input type="text" th:field="*{companyName}" id="companyName" placeholder="Enter Company name">
     </div>
     <div>
-        <label for="lastname">Last Name:</label>
-        <input type="text" th:field="*{lastname}"  id="lastname">
-    </div>
-    <div>
-        <label for="companyName">Company Name:</label>
-        <input type="text" th:field="*{companyName}"  id="companyName">
+      <label for="password">Confirm your Password:</label>
+      <input type="password" th:field="*{password}" id="password" placeholder="Enter password">
     </div>
     <button type="submit">Update</button>
-</form>
+  </form>
+</div>
 </body>
 </html>
