@@ -43,7 +43,7 @@ public class CandidateService {
   }
 
   @Transactional
-  public void updateCandidate(Long candidateId, Candidate updatedCandidate, String password) {
+  public Candidate updateCandidate(Long candidateId, Candidate updatedCandidate, String password) {
     Optional<Candidate> candidateOpt = candidateRepository.findById(candidateId);
     if (candidateOpt.isEmpty()) {
       throw new UserNotFoundException("Candidate does not exist!");
@@ -60,6 +60,7 @@ public class CandidateService {
     candidate.setLastname(updatedCandidate.getLastname());
     candidate.setCountry(updatedCandidate.getCountry());
     candidateRepository.save(candidate);
+    return updatedCandidate;
   }
 
   @Transactional
