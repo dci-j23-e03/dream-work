@@ -33,10 +33,10 @@ public class JobAdController {
   }
 
   @PostMapping
-  public ResponseEntity<JobAd> createJobAd(@RequestBody JobAd jobAd,
+  public ResponseEntity<String> createJobAd(@RequestBody JobAd jobAd,
       @RequestParam Long recruiterId) {
     jobAdService.createJobAd(jobAd, recruiterId);
-    return ResponseEntity.status(HttpStatus.CREATED).body(jobAd);
+    return ResponseEntity.status(HttpStatus.CREATED).body("Job ad created successfully.");
   }
 
   @PostMapping("/{jobAdId}/apply")

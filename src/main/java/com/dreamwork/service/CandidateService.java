@@ -3,6 +3,8 @@ package com.dreamwork.service;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.dto.RecruiterDTO;
 import com.dreamwork.dto.UserDTO;
+import com.dreamwork.exception.CvFileNotFoundException;
+import com.dreamwork.exception.IncorrectPasswordException;
 import com.dreamwork.exception.UserAlreadyExistsException;
 import com.dreamwork.exception.UserNotFoundException;
 import com.dreamwork.model.job.JobAd;
@@ -11,10 +13,8 @@ import com.dreamwork.repository.CandidateRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class CandidateService {
@@ -28,9 +28,9 @@ public class CandidateService {
 
   @Transactional
   public void saveCandidate(UserDTO user) {
-    Optional<Candidate> existingCandidate = candidateRepository
+    Optional<Candidate> candidateOpt = candidateRepository
         .findByUsername(user.getUsername());
-    if (existingCandidate.isPresent()) {
+    if (candidateOpt.isPresent()) {
       throw new UserAlreadyExistsException("Username already exists!");
     }
 
@@ -42,18 +42,24 @@ public class CandidateService {
         null));
   }
 
-  // Needs proper implementation
   @Transactional
-  public Candidate updateCandidate(Long candidateId, Candidate updatedCandidate) {
-    Candidate existingCandidate = candidateRepository.findById(candidateId)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-            "Candidate with id " + candidateId + " not found"));
+  public void updateCandidate(Long candidateId, Candidate updatedCandidate, String password) {
+    Optional<Candidate> candidateOpt = candidateRepository.findById(candidateId);
+    if (candidateOpt.isEmpty()) {
+      throw new UserNotFoundException("Candidate does not exist!");
+    }
 
-    existingCandidate.setName(updatedCandidate.getName());
-    existingCandidate.setLastname(updatedCandidate.getLastname());
-    existingCandidate.setCountry(updatedCandidate.getCountry());
+    Candidate candidate = candidateOpt.get();
 
-    return candidateRepository.save(existingCandidate);
+    if (!candidate.getPassword().equals(password)) {
+      throw new IncorrectPasswordException("Incorrect password!");
+    }
+
+    candidate.setPassword(updatedCandidate.getPassword());
+    candidate.setName(updatedCandidate.getName());
+    candidate.setLastname(updatedCandidate.getLastname());
+    candidate.setCountry(updatedCandidate.getCountry());
+    candidateRepository.save(candidate);
   }
 
   @Transactional
@@ -85,5 +91,22 @@ public class CandidateService {
                 jobAd.getRecruiter().getCompanyName())
         ))
         .toList();
+  }
+
+  @Transactional
+  public Candidate viewCv(Long candidateId) {
+    Optional<Candidate> candidateOpt = candidateRepository.findById(candidateId);
+
+    if (candidateOpt.isEmpty()) {
+      throw new UserNotFoundException("Candidate does not exist!");
+    }
+
+    Candidate candidate = candidateOpt.get();
+
+    if (candidate.getCvFile() == null || candidate.getCvFileName() == null) {
+      throw new CvFileNotFoundException("CV file not found!");
+    }
+
+    return candidate;
   }
 }
