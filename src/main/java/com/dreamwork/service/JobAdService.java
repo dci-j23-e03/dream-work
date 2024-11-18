@@ -84,11 +84,17 @@ public class JobAdService {
       throw new UserNotFoundException("Candidate does not exist!");
     }
 
+    if (!"application/pdf".equals(cvFile.getContentType())) {
+      throw new CvFileSaveException("CV file must be in PDF format!");
+    }
+
     JobAd jobAd = jobAdOpt.get();
     Candidate candidate = candidateOpt.get();
 
-    // Saving CV file and its name to the Candidate entity
     try {
+      candidate.setCvFile(null);
+      candidate.setCvFileName(null);
+
       byte[] cvBytes = cvFile.getBytes();
       String cvFileName = cvFile.getOriginalFilename();
 

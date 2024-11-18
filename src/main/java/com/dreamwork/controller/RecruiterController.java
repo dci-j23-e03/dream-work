@@ -7,9 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,12 +23,11 @@ public class RecruiterController {
     this.recruiterService = recruiterService;
   }
 
-  // Needs proper implementation
-  @PostMapping("/update/{userId}")
-  public String updateRecruiter(@PathVariable Long userId, @ModelAttribute Recruiter recruiter) {
-    recruiter.setUserId(userId);
-    recruiterService.updateRecruiterById(userId, recruiter);
-    return "redirect:/recruiters/recruiter_list";
+  @PostMapping("/update")
+  public ResponseEntity<String> updateRecruiter(@RequestParam Long recruiterId,
+      @RequestBody Recruiter updatedRecruiter, @RequestParam String password) {
+    recruiterService.updateRecruiter(recruiterId, updatedRecruiter, password);
+    return ResponseEntity.ok("Recruiter updated successfully.");
   }
 
   @PostMapping("/delete")

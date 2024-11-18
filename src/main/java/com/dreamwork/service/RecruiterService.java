@@ -3,6 +3,7 @@ package com.dreamwork.service;
 import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.dto.UserDTO;
+import com.dreamwork.exception.IncorrectPasswordException;
 import com.dreamwork.exception.UserAlreadyExistsException;
 import com.dreamwork.exception.UserNotFoundException;
 import com.dreamwork.model.job.JobAd;
@@ -25,8 +26,8 @@ public class RecruiterService {
 
   @Transactional
   public void saveRecruiter(UserDTO user) {
-    Optional<Recruiter> existingRecruiter = recruiterRepository.findByUsername(user.getUsername());
-    if (existingRecruiter.isPresent()) {
+    Optional<Recruiter> recruiterOpt = recruiterRepository.findByUsername(user.getUsername());
+    if (recruiterOpt.isPresent()) {
       throw new UserAlreadyExistsException("Username already exists!");
     }
 
@@ -38,18 +39,24 @@ public class RecruiterService {
         null));
   }
 
-  // Needs proper implementation
   @Transactional
-  public void updateRecruiterById(Long userId, Recruiter updatedRecruiter) {
-    Optional<Recruiter> existingRecruiterOptional = recruiterRepository.findById(userId);
-    if (existingRecruiterOptional.isPresent()) {
-      Recruiter existingRecruiter = existingRecruiterOptional.get();
-      existingRecruiter.setUsername(updatedRecruiter.getUsername());
-      existingRecruiter.setPassword(updatedRecruiter.getPassword());
-      existingRecruiter.setName(updatedRecruiter.getName());
-      existingRecruiter.setLastname(updatedRecruiter.getLastname());
-      existingRecruiter.setCompanyName(updatedRecruiter.getCompanyName());
+  public void updateRecruiter(Long recruiterId, Recruiter updatedRecruiter, String password) {
+    Optional<Recruiter> recruiterOpt = recruiterRepository.findById(recruiterId);
+    if (recruiterOpt.isEmpty()) {
+      throw new UserNotFoundException("Recruiter does not exist!");
     }
+
+    Recruiter recruiter = recruiterOpt.get();
+
+    if (!recruiter.getPassword().equals(password)) {
+      throw new IncorrectPasswordException("Incorrect password!");
+    }
+
+    recruiter.setPassword(updatedRecruiter.getPassword());
+    recruiter.setName(updatedRecruiter.getName());
+    recruiter.setLastname(updatedRecruiter.getLastname());
+    recruiter.setCompanyName(updatedRecruiter.getCompanyName());
+    recruiterRepository.save(recruiter);
   }
 
   @Transactional

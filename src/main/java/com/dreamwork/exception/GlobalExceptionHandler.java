@@ -33,6 +33,15 @@ public class GlobalExceptionHandler {
         e.getMessage());
   }
 
+  @ExceptionHandler(value = IncorrectPasswordException.class)
+  public @ResponseBody ErrorResponse handleIncorrectPasswordException(
+      IncorrectPasswordException e) {
+    return new ErrorResponse(
+        HttpStatus.UNAUTHORIZED.value(),
+        HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+        e.getMessage());
+  }
+
   @ExceptionHandler(value = InvalidEnumException.class)
   public @ResponseBody ErrorResponse handleInvalidEnumException(InvalidEnumException e) {
     return new ErrorResponse(
@@ -42,10 +51,18 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(value = CvFileSaveException.class)
-  public @ResponseBody ErrorResponse handleResumeFileSaveException(CvFileSaveException e) {
+  public @ResponseBody ErrorResponse handleCvFileSaveException(CvFileSaveException e) {
     return new ErrorResponse(
         HttpStatus.INTERNAL_SERVER_ERROR.value(),
         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+        e.getMessage());
+  }
+
+  @ExceptionHandler(value = CvFileNotFoundException.class)
+  public @ResponseBody ErrorResponse handleCvFileNotFoundException(CvFileNotFoundException e) {
+    return new ErrorResponse(
+        HttpStatus.NOT_FOUND.value(),
+        HttpStatus.NOT_FOUND.getReasonPhrase(),
         e.getMessage());
   }
 }
