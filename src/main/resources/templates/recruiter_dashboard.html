@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Recruiter Dashboard</title>
+  <style>
+    body {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<h2>Welcome, <span th:text="${recruiter.name}"></span></h2>
+<form th:action="@{/logout}" method="post" class="d-inline">
+  <!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+  <button type="submit">Logout</button>
+</form>
+<h3>Your Job Ads</h3>
+<ul>
+  <li th:each="jobAd : ${jobAds}">
+    <span th:text="${jobAd.position}"></span>
+    <span th:text="${jobAd.country}"></span>
+    <span th:text="${jobAd.city}"></span>
+    <span th:text="${jobAd.seniority}"></span>
+    <span th:text="${jobAd.mainTechStack}"></span>
+    <span th:text="${jobAd.description}"></span>
+  </li>
+</ul>
+
+<a href="/job-ads/createJobAd">Create New Job Ad</a><br>
+<a href="/recruiter_update">Edit Your Profile</a>
+
+</body>
+</html>

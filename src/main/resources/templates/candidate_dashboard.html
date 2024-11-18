@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Candidate Dashboard</title>
+  body {
+  text-align: center;
+  }
+</head>
+<body>
+<h2>Welcome, <span th:text="${candidate.name}"></span></h2>
+<h1>Available Jobs</h1>
+<ul>
+  <li th:each="job : ${jobs}">
+    <strong th:text="${job.title}">Job Title</strong><br>
+    <p th:text="${job.description}">Job Description</p>
+    <form th:action="@{'/candidate/apply/' + ${job.id}}" method="post">
+      <button type="submit">Apply</button>
+    </form>
+  </li>
+</ul>
+</body>
+</html>
