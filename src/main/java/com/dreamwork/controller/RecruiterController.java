@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/recruiter")
+@RequestMapping("/recruiters")
 public class RecruiterController {
 
   private final RecruiterService recruiterService;
@@ -31,27 +31,23 @@ public class RecruiterController {
     this.recruiterService = recruiterService;
   }
 
+//  @PostMapping("/update")
+//  public ResponseEntity<String> updateRecruiter(
+//      @RequestBody Recruiter updatedRecruiter, @RequestParam String password) {
+//    recruiterService.updateRecruiter(updatedRecruiter, password);
+//    return ResponseEntity.ok("Recruiter updated successfully.");
+//  }
+
+  @GetMapping("/update")
+  public String getUpdateInfo(Model model, Recruiter recruiter){
+    model.addAttribute("recruiter", recruiter);
+    return "recruiter-update";
+  }
+
   @PostMapping("/update")
-  public ResponseEntity<String> updateRecruiter(@RequestParam Long recruiterId,
-      @RequestBody Recruiter updatedRecruiter, @RequestParam String password) {
-    recruiterService.updateRecruiter(recruiterId, updatedRecruiter, password);
-    return ResponseEntity.ok("Recruiter updated successfully.");
-  }
-
-  @GetMapping("/recruiter_update")
-  public String showRecUpdateForm(Model model) {
-    model.addAttribute("recruiter", new RecruiterDTO());
-    return "recruiter_update";
-  }
-
-  @PostMapping("/recruiter_update")
-  public String updateRecruiter(@ModelAttribute("recruiter") Recruiter recruiter,
-      RedirectAttributes redirectAttributes, HttpSession session) {
-    User user = (User) session.getAttribute("user");
-    Long userId = user.getUserId();
-    recruiterService.updateRecruiter(userId, recruiter, recruiter.getPassword());
-    redirectAttributes.addFlashAttribute("message", "User updated successfully.");
-    return "redirect:/recruiter_dashboard";
+  private String updateRecruiter(@ModelAttribute Recruiter recruiter, @RequestParam String currentPassword){
+    recruiterService.updateRecruiter(recruiter, currentPassword);
+    return "recruiter-update";
   }
 
   @PostMapping("/delete")
@@ -60,14 +56,14 @@ public class RecruiterController {
     return ResponseEntity.noContent().build();
   }
 
-  @PostMapping("/delete")
-  public String deleteRecruiter(@RequestParam Long recruiterId,
-      RedirectAttributes redirectAttributes) {
-    recruiterService.deleteRecruiter(recruiterId);
-    redirectAttributes.addFlashAttribute("message", "User updated successfully.");
-
-    return "redirect:/";
-  }
+//  @PostMapping("/delete")
+//  public String deleteRecruiter(@RequestParam Long recruiterId,
+//      RedirectAttributes redirectAttributes) {
+//    recruiterService.deleteRecruiter(recruiterId);
+//    redirectAttributes.addFlashAttribute("message", "User updated successfully.");
+//
+//    return "redirect:/";
+//  }
 
   @GetMapping("/job-ads")
   public ResponseEntity<List<JobAdDTO>> getAllJobAdsByRecruiterId(@RequestParam Long recruiterId) {

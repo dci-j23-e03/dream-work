@@ -8,13 +8,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import java.util.Collection;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class User {
+public abstract class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +40,7 @@ public abstract class User {
   @Column(nullable = false)
   private Role role;
 
-  protected User(String username, String password, String name, String lastname, Role role) {
+  public User(String username, String password, String name, String lastname, Role role) {
     this.username = username;
     this.password = password;
     this.name = name;
@@ -44,6 +48,11 @@ public abstract class User {
     this.role = role;
   }
 
-  protected User() {
+  public User() {
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of();
   }
 }

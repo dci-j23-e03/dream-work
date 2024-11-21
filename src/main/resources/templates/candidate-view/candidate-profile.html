@@ -5,6 +5,11 @@
   <title>Candidate Profile</title>
 </head>
 <body>
+<nav class="d-flex justify-content-end p-3">
+  <a href="candidate-job-list.html" class="btn btn-outline-primary me-2">View Jobs Availablet</a>
+  <a href="@{/logout}" class="btn btn-outline-secondary">Logout</a>
+  <a href="candidate-profile.html" class="btn btn-outline-secondary">Account</a>
+</nav>
 <h1>Your Profile</h1>
 
 <p><strong>Name:</strong> <span th:text="${candidate.name} ${candidate.lastname}"></span></p>

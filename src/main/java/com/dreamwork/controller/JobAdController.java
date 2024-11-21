@@ -39,10 +39,20 @@ public class JobAdController {
     return ResponseEntity.status(HttpStatus.CREATED).body("Job ad created successfully.");
   }
 
+//  @PostMapping("/{jobAdId}/apply")
+//  public ResponseEntity<String> applyToJob(@PathVariable Long jobAdId,
+//      @RequestParam Long candidateId, @RequestParam MultipartFile cvFile) {
+//    jobAdService.applyToJob(jobAdId, candidateId, cvFile);
+//    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Applied successfully.");
+//  }
+
   @PostMapping("/{jobAdId}/apply")
-  public ResponseEntity<String> applyToJob(@PathVariable Long jobAdId,
-      @RequestParam Long candidateId, @RequestParam MultipartFile cvFile) {
+  public String applyToJob(@PathVariable Long jobAdId,
+                           @RequestParam Long candidateId,
+                           @RequestParam MultipartFile cvFile) {
     jobAdService.applyToJob(jobAdId, candidateId, cvFile);
-    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Applied successfully.");
+
+    return "redirect:/public-view/job-description/" + jobAdId;
   }
+
 }

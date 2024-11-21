@@ -3,18 +3,23 @@ package com.dreamwork.controller;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.service.CandidateService;
+import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/candidates")
@@ -26,11 +31,32 @@ public class CandidateController {
     this.candidateService = candidateService;
   }
 
+//  @PostMapping("/update")
+//  public ResponseEntity<String> updateCandidate(@RequestParam Long candidateId,
+//      @RequestBody Candidate updatedCandidate, @RequestParam String password) {
+//    candidateService.updateCandidate(updatedCandidate, password);
+//    return ResponseEntity.ok("Candidate updated successfully.");
+//  }
+
+//  @GetMapping("/candidate-profile")
+//  public String getCandidateProfile(Model model, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+//    String username = userPrincipal.getUsername();
+//    Candidate candidate = candidateService.getCandidateByUsername(username);
+//    model.addAttribute("candidate", candidate);
+//    return "candidate-profile";
+//  }
+
+
+  @GetMapping("/update")
+  public String getUpdateInfo(Model model, Candidate candidate){
+    model.addAttribute("candidate", candidate);
+    return "candidate-update";
+  }
+
   @PostMapping("/update")
-  public ResponseEntity<String> updateCandidate(@RequestParam Long candidateId,
-      @RequestBody Candidate updatedCandidate, @RequestParam String password) {
-    candidateService.updateCandidate(candidateId, updatedCandidate, password);
-    return ResponseEntity.ok("Candidate updated successfully.");
+  private String updateRecruiter(@ModelAttribute Candidate candidate, @RequestParam String currentPassword){
+    candidateService.updateCandidate(candidate, currentPassword);
+    return "candidate-update";
   }
 
   @PostMapping("/delete")
