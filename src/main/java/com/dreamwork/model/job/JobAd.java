@@ -16,10 +16,12 @@ import jakarta.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class JobAd {
 
@@ -29,6 +31,12 @@ public class JobAd {
 
   @Column(nullable = false)
   private String position;
+
+  @Column(nullable = false)
+  private String date;
+
+  @Column(nullable = false)
+  private String company;
 
   @Column(nullable = false)
   private String country;
@@ -54,18 +62,4 @@ public class JobAd {
   @ManyToMany(mappedBy = "appliedJobAds")
   @JsonIgnoreProperties("appliedJobAds") // To avoid circular references with Candidate
   private List<Candidate> candidates = new ArrayList<>();
-
-  public JobAd(String position, String country, String city, Seniority seniority,
-      String mainTechStack, String description, Recruiter recruiter) {
-    this.position = position;
-    this.country = country;
-    this.city = city;
-    this.seniority = seniority;
-    this.mainTechStack = mainTechStack;
-    this.description = description;
-    this.recruiter = recruiter;
-  }
-
-  public JobAd() {
-  }
 }

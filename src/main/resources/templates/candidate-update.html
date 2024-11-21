@@ -19,25 +19,16 @@
   <form th:action="@{/candidates/update}" method="post" th:object="${candidate}" class="mt-3">
 
     <label for="password" class="form-label">New Password:</label>
-    <input type="password" id="password" th:field="*{password}" placeholder="New Password"
-           class="form-control"><br>
+    <input type="password" id="password" th:field="*{password}" class="form-control"><br>
 
     <label for="name" class="form-label">First Name:</label>
-    <input type="text" id="name" th:field="*{name}" placeholder="First Name"
-           class="form-control"><br>
+    <input type="text" id="name" th:field="*{name}" class="form-control"><br>
 
     <label for="lastname" class="form-label">Last Name:</label>
-    <input type="text" id="lastname" th:field="*{lastname}" placeholder="Last Name"
-           class="form-control"><br>
-
-    <label for="country" class="form-label">Country:</label>
-    <input type="text" id="country" th:field="*{country}" placeholder="Country"
-           class="form-control"><br>
+    <input type="text" id="lastname" th:field="*{lastname}" class="form-control"><br>
 
     <label for="currentPassword" class="form-label">Confirm with current password:</label>
-    <input type="password" id="currentPassword" name="currentPassword"
-           placeholder="Current Password"
-           class="form-control"><br>
+    <input type="password" id="currentPassword" name="currentPassword" class="form-control"><br>
     <div class="text-center">
       <button type="submit">Update</button>
     </div>

@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Autowired
   public CustomUserDetailsService(CandidateRepository candidateRepository,
-                                  RecruiterRepository recruiterRepository) {
+      RecruiterRepository recruiterRepository) {
     this.candidateRepository = candidateRepository;
     this.recruiterRepository = recruiterRepository;
   }

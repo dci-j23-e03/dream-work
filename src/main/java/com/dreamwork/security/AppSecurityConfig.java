@@ -1,5 +1,6 @@
 package com.dreamwork.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -18,7 +19,7 @@ public class AppSecurityConfig {
 
   private final UserDetailsService userDetailsService;
 
-  public AppSecurityConfig(UserDetailsService userDetailsService) {
+  public AppSecurityConfig(@Autowired UserDetailsService userDetailsService) {
     this.userDetailsService = userDetailsService;
   }
 
@@ -42,28 +43,29 @@ public class AppSecurityConfig {
             .requestMatchers("/login", "/register", "/job-ads", "/public-view/**").permitAll()
             .anyRequest().authenticated()
     ).formLogin(auth ->
-        auth
-            .loginPage("/login")
+            auth
+                .loginPage("/login")
 //            .defaultSuccessUrl("/job-ads", true)
-            .permitAll()
-            .successHandler((request, response, authentication) -> {
-              String redirectUrl = request.getParameter("redirect");
+                .permitAll()
+                .successHandler((request, response, authentication) -> {
+                  String redirectUrl = request.getParameter("redirect");
 
-              // If there's a 'redirect' parameter, use it to redirect the user
-              if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                response.sendRedirect(redirectUrl);
-              } else {
-                // Default redirect based on user role
-                String role = authentication.getAuthorities().toString();
-                if (role.contains("ROLE_CANDIDATE")) {
-                  response.sendRedirect("/candidate-dashboard");
-                } else if (role.contains("ROLE_RECRUITER")) {
-                  response.sendRedirect("/recruiter-dashboard");
-                } else {
-                  response.sendRedirect("/job-ads"); //will need to be changed to another default page
-                }
-              }
-            })
+                  // If there's a 'redirect' parameter, use it to redirect the user
+                  if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                    response.sendRedirect(redirectUrl);
+                  } else {
+                    // Default redirect based on user role
+                    String role = authentication.getAuthorities().toString();
+                    if (role.contains("ROLE_CANDIDATE")) {
+                      response.sendRedirect("/candidate-dashboard");
+                    } else if (role.contains("ROLE_RECRUITER")) {
+                      response.sendRedirect("/recruiter-dashboard");
+                    } else {
+                      response.sendRedirect(
+                          "/job-ads"); //will need to be changed to another default page
+                    }
+                  }
+                })
     ).logout(logout ->
         logout
             .logoutUrl("/logout")
@@ -73,6 +75,7 @@ public class AppSecurityConfig {
             .invalidateHttpSession(true)
             .permitAll()
     );
+
     return http.build();
   }
 
