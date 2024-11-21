@@ -19,13 +19,14 @@ public class AuthenticationService {
 
   @Autowired
   public AuthenticationService(CandidateRepository candidateRepository,
-                               RecruiterRepository recruiterRepository) {
+      RecruiterRepository recruiterRepository) {
     this.candidateRepository = candidateRepository;
     this.recruiterRepository = recruiterRepository;
   }
 
   public User getCurrentUser() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
     Optional<Candidate> candidateOpt = candidateRepository.findByUsername(username);
     Optional<Recruiter> recruiterOpt = recruiterRepository.findByUsername(username);
 
@@ -37,5 +38,4 @@ public class AuthenticationService {
       throw new UsernameNotFoundException("User not found with username: " + username);
     }
   }
-
 }

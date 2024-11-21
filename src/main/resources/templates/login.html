@@ -38,10 +38,6 @@
       <button type="submit" class="btn btn-primary w-100">Login</button>
     </form>
 
-    <!-- Redirect to the previous page after login -->
-    <input type="hidden" name="redirect" th:value="${param.redirect}" />
-
-
     <div class="mt-3">
       <a th:href="@{/register}">Don't have an account? Register here</a>
     </div>

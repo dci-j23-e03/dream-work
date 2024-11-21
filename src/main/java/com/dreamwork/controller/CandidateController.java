@@ -1,9 +1,11 @@
 package com.dreamwork.controller;
 
+import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.model.user.Candidate;
+import com.dreamwork.model.user.User;
 import com.dreamwork.service.CandidateService;
-import java.nio.file.attribute.UserPrincipal;
+import com.dreamwork.service.JobAdService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ContentDisposition;
@@ -11,7 +13,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,36 +27,35 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CandidateController {
 
   private final CandidateService candidateService;
+  private final JobAdService jobAdService;
+  private final AuthenticationService authenticationService;
 
-  public CandidateController(@Autowired CandidateService candidateService) {
+  public CandidateController(@Autowired CandidateService candidateService,
+      JobAdService jobAdService, AuthenticationService authenticationService) {
     this.candidateService = candidateService;
+    this.jobAdService = jobAdService;
+    this.authenticationService = authenticationService;
   }
 
-//  @PostMapping("/update")
-//  public ResponseEntity<String> updateCandidate(@RequestParam Long candidateId,
-//      @RequestBody Candidate updatedCandidate, @RequestParam String password) {
-//    candidateService.updateCandidate(updatedCandidate, password);
-//    return ResponseEntity.ok("Candidate updated successfully.");
-//  }
+  @GetMapping
+  public String getCandidateDashboard(Model model) {
+    User user = authenticationService.getCurrentUser();
+    model.addAttribute("candidate", user);
 
-//  @GetMapping("/candidate-profile")
-//  public String getCandidateProfile(Model model, @AuthenticationPrincipal UserPrincipal userPrincipal) {
-//    String username = userPrincipal.getUsername();
-//    Candidate candidate = candidateService.getCandidateByUsername(username);
-//    model.addAttribute("candidate", candidate);
-//    return "candidate-profile";
-//  }
-
+    return "candidate-dashboard";
+  }
 
   @GetMapping("/update")
-  public String getUpdateInfo(Model model, Candidate candidate){
+  public String getUpdateInfo(Model model, Candidate candidate) {
     model.addAttribute("candidate", candidate);
     return "candidate-update";
   }
 
   @PostMapping("/update")
-  private String updateRecruiter(@ModelAttribute Candidate candidate, @RequestParam String currentPassword){
+  public String updateCandidate(@ModelAttribute Candidate candidate,
+      @RequestParam String currentPassword) {
     candidateService.updateCandidate(candidate, currentPassword);
+
     return "candidate-update";
   }
 
@@ -66,9 +66,11 @@ public class CandidateController {
   }
 
   @GetMapping("/job-ads")
-  public ResponseEntity<List<JobAdDTO>> getAllJobAdsByCandidateId(@RequestParam Long candidateId) {
-    List<JobAdDTO> jobAdDTOs = candidateService.getAllJobAdsByCandidateId(candidateId);
-    return ResponseEntity.ok(jobAdDTOs);
+  public String getAllJobAdsForCandidate(Model model) {
+    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAdsForCandidate();
+    model.addAttribute("jobAds", jobAdDTOs);
+
+    return "candidate-job-ads";
   }
 
   @GetMapping("/{candidateId}/view-cv")

@@ -1,58 +1,70 @@
 package com.dreamwork.controller;
 
+import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.model.job.JobAd;
+import com.dreamwork.service.CandidateService;
 import com.dreamwork.service.JobAdService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@RestController
+@Controller
 @RequestMapping("/job-ads")
 public class JobAdController {
 
   private final JobAdService jobAdService;
+  private final CandidateService candidateService;
 
-  public JobAdController(@Autowired JobAdService jobAdService) {
+  @Autowired
+  public JobAdController(JobAdService jobAdService, CandidateService candidateService) {
     this.jobAdService = jobAdService;
+    this.candidateService = candidateService;
   }
 
   @GetMapping
-  public ResponseEntity<List<JobAdDTO>> getAllJobAds() {
+  public String getAllJobAds(Model model) {
     List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds();
-    return ResponseEntity.ok(jobAdDTOs);
+    model.addAttribute("jobAds", jobAdDTOs);
+
+    return "job-ads";
   }
 
-  @PostMapping
-  public ResponseEntity<String> createJobAd(@RequestBody JobAd jobAd,
-      @RequestParam Long recruiterId) {
-    jobAdService.createJobAd(jobAd, recruiterId);
-    return ResponseEntity.status(HttpStatus.CREATED).body("Job ad created successfully.");
+  @GetMapping("create")
+  public String getCreateJobAdForm(Model model) {
+    model.addAttribute("jobAd", new JobAd());
+
+    return "create-job-ad";
   }
 
-//  @PostMapping("/{jobAdId}/apply")
-//  public ResponseEntity<String> applyToJob(@PathVariable Long jobAdId,
-//      @RequestParam Long candidateId, @RequestParam MultipartFile cvFile) {
-//    jobAdService.applyToJob(jobAdId, candidateId, cvFile);
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Applied successfully.");
-//  }
+  @PostMapping("create")
+  public String createJobAd(JobAd jobAd) {
+    jobAdService.createJobAd(jobAd);
+
+    return "redirect:/recruiters";
+  }
+
 
   @PostMapping("/{jobAdId}/apply")
   public String applyToJob(@PathVariable Long jobAdId,
-                           @RequestParam Long candidateId,
-                           @RequestParam MultipartFile cvFile) {
-    jobAdService.applyToJob(jobAdId, candidateId, cvFile);
+      @RequestParam MultipartFile cvFile) {
+    jobAdService.applyToJob(jobAdId, cvFile);
 
-    return "redirect:/public-view/job-description/" + jobAdId;
+    return "redirect:/candidates";
   }
 
+  @GetMapping("/{jobAdId}/candidates")
+  public String getAllCandidatesForJobAd(Model model, @PathVariable Long jobAdId) {
+    List<CandidateDTO> candidateDTOs = candidateService.getAllCandidatesForJobAd(jobAdId);
+    model.addAttribute("candidatesList", candidateDTOs);
+
+    return "job-ad-candidates";
+  }
 }

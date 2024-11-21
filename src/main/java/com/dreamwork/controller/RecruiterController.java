@@ -1,12 +1,11 @@
 package com.dreamwork.controller;
 
+import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
-import com.dreamwork.dto.RecruiterDTO;
 import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.model.user.User;
-import com.dreamwork.repository.RecruiterRepository;
+import com.dreamwork.service.JobAdService;
 import com.dreamwork.service.RecruiterService;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,38 +14,43 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/recruiters")
 public class RecruiterController {
 
   private final RecruiterService recruiterService;
+  private final JobAdService jobAdService;
+  private final AuthenticationService authenticationService;
 
   public RecruiterController(@Autowired RecruiterService recruiterService,
-      RecruiterRepository recruiterRepository) {
+      JobAdService jobAdService, AuthenticationService authenticationService) {
     this.recruiterService = recruiterService;
+    this.jobAdService = jobAdService;
+    this.authenticationService = authenticationService;
   }
 
-//  @PostMapping("/update")
-//  public ResponseEntity<String> updateRecruiter(
-//      @RequestBody Recruiter updatedRecruiter, @RequestParam String password) {
-//    recruiterService.updateRecruiter(updatedRecruiter, password);
-//    return ResponseEntity.ok("Recruiter updated successfully.");
-//  }
+  @GetMapping
+  public String getRecruiterDashboard(Model model) {
+    User user = authenticationService.getCurrentUser();
+    model.addAttribute("recruiter", user);
+
+    return "recruiter-dashboard";
+  }
 
   @GetMapping("/update")
-  public String getUpdateInfo(Model model, Recruiter recruiter){
+  public String getUpdateInfo(Model model, Recruiter recruiter) {
     model.addAttribute("recruiter", recruiter);
     return "recruiter-update";
   }
 
   @PostMapping("/update")
-  private String updateRecruiter(@ModelAttribute Recruiter recruiter, @RequestParam String currentPassword){
+  public String updateRecruiter(@ModelAttribute Recruiter recruiter,
+      @RequestParam String currentPassword) {
     recruiterService.updateRecruiter(recruiter, currentPassword);
+
     return "recruiter-update";
   }
 
@@ -56,18 +60,11 @@ public class RecruiterController {
     return ResponseEntity.noContent().build();
   }
 
-//  @PostMapping("/delete")
-//  public String deleteRecruiter(@RequestParam Long recruiterId,
-//      RedirectAttributes redirectAttributes) {
-//    recruiterService.deleteRecruiter(recruiterId);
-//    redirectAttributes.addFlashAttribute("message", "User updated successfully.");
-//
-//    return "redirect:/";
-//  }
-
   @GetMapping("/job-ads")
-  public ResponseEntity<List<JobAdDTO>> getAllJobAdsByRecruiterId(@RequestParam Long recruiterId) {
-    List<JobAdDTO> jobAdDTOs = recruiterService.getAllJobAdsByRecruiterId(recruiterId);
-    return ResponseEntity.ok(jobAdDTOs);
+  public String getAllJobAdsForRecruiter(Model model) {
+    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAdsForRecruiter();
+    model.addAttribute("jobAds", jobAdDTOs);
+
+    return "recruiter-job-ads";
   }
 }

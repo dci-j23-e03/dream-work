@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Recruiter Dashboard</title>
   <style>
@@ -30,9 +30,9 @@
       margin-bottom: 30px;
     }
 
-    .dashboard-container button {
+    .button {
       display: block;
-      width: 100%;
+      /*width: 100%;*/
       padding: 15px;
       margin: 10px 0;
       font-size: 16px;
@@ -41,21 +41,24 @@
       border: 2px solid #ccc;
       border-radius: 5px;
       cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
-    .dashboard-container button:hover {
+    .button:hover {
       background-color: #0056b3;
       border-color: #0056b3;
       color: #fff;
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
 <div class="dashboard-container">
-  <h2>Welcome, <span th:text="${candidate.name}"></span> </h2>
+  <h2>Welcome, <span th:text="${candidate.name}"></span></h2>
 
-  <button onclick="location.href='/candidates/candidate-update';">Update Account</button>
-  <button onclick="location.href='/candidates/job-ads';">See Applied Job Ads</button>
+  <a th:href="@{/candidates/update}" class="button">Update Account</a>
+  <a th:href="@{/candidates/job-ads}" class="button">Applied Job Ads</a>
 </div>
 </body>
 </html>

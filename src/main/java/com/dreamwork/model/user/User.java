@@ -11,12 +11,14 @@ import jakarta.persistence.MappedSuperclass;
 import java.util.Collection;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @MappedSuperclass
 public abstract class User implements UserDetails {
 
@@ -36,19 +38,21 @@ public abstract class User implements UserDetails {
   @Column(nullable = false)
   private String lastname;
 
+  @Column(nullable = false, unique = true)
+  private String email;
+
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private Role role;
 
-  public User(String username, String password, String name, String lastname, Role role) {
+  protected User(String username, String password, String name, String lastname, String email,
+      Role role) {
     this.username = username;
     this.password = password;
     this.name = name;
     this.lastname = lastname;
+    this.email = email;
     this.role = role;
-  }
-
-  public User() {
   }
 
   @Override

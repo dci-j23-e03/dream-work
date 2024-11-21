@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface RecruiterRepository extends JpaRepository<Recruiter, Long> {
 
   Optional<Recruiter> findByUsername(String username);
+
+  Optional<Recruiter> findByEmail(String email);
 }

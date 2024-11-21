@@ -11,15 +11,14 @@ import jakarta.persistence.ManyToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class Candidate extends User {
-
-//  @Column(nullable = false)
-  private String country;
 
   @ManyToMany
   @JoinTable(name = "applied_jobs", joinColumns = @JoinColumn(name = "candidate_id"),
@@ -32,11 +31,7 @@ public class Candidate extends User {
 
   private String cvFileName;
 
-  public Candidate(String username, String password, String name, String lastname, String country) {
-    super(username, password, name, lastname, Role.CANDIDATE);
-    this.country = country;
-  }
-
-  public Candidate() {
+  public Candidate(String username, String password, String name, String lastname, String email) {
+    super(username, password, name, lastname, email, Role.CANDIDATE);
   }
 }

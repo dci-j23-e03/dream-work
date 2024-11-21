@@ -8,26 +8,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class Recruiter extends User {
-
-//  @Column(nullable = false)
-  private String companyName;
 
   @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
   @JsonIgnore // To prevent recursion when fetching JobAds that contain Recruiters
   private List<JobAd> jobAds;
 
-  public Recruiter(String username, String password, String name, String lastname,
-      String companyName) {
-    super(username, password, name, lastname, Role.RECRUITER);
-    this.companyName = companyName;
-  }
-
-  public Recruiter() {
+  public Recruiter(String username, String password, String name, String lastname, String email) {
+    super(username, password, name, lastname, email, Role.RECRUITER);
   }
 }
