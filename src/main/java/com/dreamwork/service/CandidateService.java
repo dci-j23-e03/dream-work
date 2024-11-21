@@ -1,5 +1,6 @@
 package com.dreamwork.service;
 
+import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.dto.RecruiterDTO;
 import com.dreamwork.dto.UserDTO;
@@ -9,21 +10,36 @@ import com.dreamwork.exception.UserAlreadyExistsException;
 import com.dreamwork.exception.UserNotFoundException;
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.user.Candidate;
+import com.dreamwork.model.user.User;
 import com.dreamwork.repository.CandidateRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class CandidateService {
 
   private final CandidateRepository candidateRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final AuthenticationService authenticationService;
 
   @Autowired
-  public CandidateService(@Autowired CandidateRepository candidateRepository) {
+  public CandidateService(@Autowired CandidateRepository candidateRepository,
+                          PasswordEncoder passwordEncoder,
+                          AuthenticationService authenticationService) {
     this.candidateRepository = candidateRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.authenticationService = authenticationService;
+  }
+
+  public Candidate getCandidateByUsername(String username) {
+    return candidateRepository.findByUsername(username)
+        .orElseThrow(() -> new UserNotFoundException("Candidate does not exist!"));
   }
 
   @Transactional
@@ -36,30 +52,27 @@ public class CandidateService {
 
     candidateRepository.save(new Candidate(
         user.getUsername(),
-        user.getPassword(),
+        passwordEncoder.encode(user.getPassword()),
         user.getName(),
         user.getLastname(),
         null));
   }
 
   @Transactional
-  public Candidate updateCandidate(Long candidateId, Candidate updatedCandidate, String password) {
-    Optional<Candidate> candidateOpt = candidateRepository.findById(candidateId);
-    if (candidateOpt.isEmpty()) {
-      throw new UserNotFoundException("Candidate does not exist!");
-    }
+  public Candidate updateCandidate(@RequestBody Candidate updatedCandidate, @RequestParam String password) {
+    User user = authenticationService.getCurrentUser();
+    Candidate candidate = (Candidate) user;
 
-    Candidate candidate = candidateOpt.get();
-
-    if (!candidate.getPassword().equals(password)) {
+    if (!passwordEncoder.matches(password, candidate.getPassword())) {
       throw new IncorrectPasswordException("Incorrect password!");
     }
 
-    candidate.setPassword(updatedCandidate.getPassword());
+    candidate.setPassword(passwordEncoder.encode(updatedCandidate.getPassword()));
     candidate.setName(updatedCandidate.getName());
     candidate.setLastname(updatedCandidate.getLastname());
     candidate.setCountry(updatedCandidate.getCountry());
     candidateRepository.save(candidate);
+
     return updatedCandidate;
   }
 

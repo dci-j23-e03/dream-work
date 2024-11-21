@@ -1,5 +1,6 @@
 package com.dreamwork.service;
 
+import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.dto.UserDTO;
@@ -7,11 +8,14 @@ import com.dreamwork.exception.IncorrectPasswordException;
 import com.dreamwork.exception.UserAlreadyExistsException;
 import com.dreamwork.exception.UserNotFoundException;
 import com.dreamwork.model.job.JobAd;
+import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
+import com.dreamwork.model.user.User;
 import com.dreamwork.repository.RecruiterRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +23,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class RecruiterService {
 
   private final RecruiterRepository recruiterRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final AuthenticationService authenticationService;
 
-  public RecruiterService(@Autowired RecruiterRepository recruiterRepository) {
+
+  public RecruiterService(@Autowired RecruiterRepository recruiterRepository,
+                          PasswordEncoder passwordEncoder,
+                          AuthenticationService authenticationService) {
     this.recruiterRepository = recruiterRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.authenticationService = authenticationService;
   }
 
   @Transactional
@@ -33,26 +44,22 @@ public class RecruiterService {
 
     recruiterRepository.save(new Recruiter(
         user.getUsername(),
-        user.getPassword(),
+        passwordEncoder.encode(user.getPassword()),
         user.getName(),
         user.getLastname(),
         null));
   }
 
   @Transactional
-  public void updateRecruiter(Long recruiterId, Recruiter updatedRecruiter, String password) {
-    Optional<Recruiter> recruiterOpt = recruiterRepository.findById(recruiterId);
-    if (recruiterOpt.isEmpty()) {
-      throw new UserNotFoundException("Recruiter does not exist!");
-    }
+  public void updateRecruiter(Recruiter updatedRecruiter, String password) {
+    User user = authenticationService.getCurrentUser();
+    Recruiter recruiter = (Recruiter) user;
 
-    Recruiter recruiter = recruiterOpt.get();
-
-    if (!recruiter.getPassword().equals(password)) {
+    if (!passwordEncoder.matches(password, recruiter.getPassword())) {
       throw new IncorrectPasswordException("Incorrect password!");
     }
 
-    recruiter.setPassword(updatedRecruiter.getPassword());
+    recruiter.setPassword(passwordEncoder.encode(updatedRecruiter.getPassword()));
     recruiter.setName(updatedRecruiter.getName());
     recruiter.setLastname(updatedRecruiter.getLastname());
     recruiter.setCompanyName(updatedRecruiter.getCompanyName());
