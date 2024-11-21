@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  lang="en">
+<head>
+  <title>Recruiter Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: ghostwhite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dashboard-container {
+      margin-top: 20px;
+      text-align: center;
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .dashboard-container h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .dashboard-container button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      color: #333;
+      background-color: #007bff;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .dashboard-container button:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-container">
+  <h2>Welcome, <span th:text="${recruiter.name}"></span> </h2>
+
+  <button onclick="location.href='/recruiters/recruiter-update';">Update Account</button>
+  <button onclick="location.href='/job-ads/create-job-ad';">Create Job Ad</button>
+  <button onclick="location.href='/recruiters/job-ads';">See Listed Job Ads</button>
+</div>
+</body>
+</html>

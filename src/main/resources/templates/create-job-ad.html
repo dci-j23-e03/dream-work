@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Create Job Ad</title>
+  <style>
+    body {
+      font-family: Arial,sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: ghostwhite;
+    }
+
+    .form-container {
+      margin-top: 20px;
+      padding: 30px 40px;
+      border-radius: 8px;
+      background-color:white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    form label {
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    form input, form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    form select {
+      width: 104%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    form textarea {
+      height: 100px;
+      width: 100%;
+      resize: vertical;
+    }
+
+    button {
+      width: 50%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<div class="form-container">
+  <h2>Create Job Ad</h2>
+  <form th:action="@{/create-job-ad}" method="post" th:object="${jobAd}">
+    <label for="position">Position:</label>
+    <input type="text" id="position" name="position" required>
+
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="country" required>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required>
+
+    <label for="seniority">Seniority:</label>
+    <select name="seniority" id="seniority" required>
+      <option value="INTERN">INTERN</option>
+      <option value="JUNIOR">JUNIOR</option>
+      <option value="MID_LEVEL">MID_LEVEL</option>
+      <option value="SENIOR">SENIOR</option>
+      <option value="LEAD">LEAD</option>
+    </select>
+
+    <label for="mainTechStack">Main Tech Stack:</label>
+    <input type="text" id="mainTechStack" name="mainTechStack" required>
+
+    <label for="description">Job Description:</label>
+    <textarea id="description" name="description" required></textarea>
+
+    <button type="submit">Create Job Ad</button>
+  </form>
+</div>
+</body>
+</html>
