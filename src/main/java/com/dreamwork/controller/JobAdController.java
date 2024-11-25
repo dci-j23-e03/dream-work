@@ -37,6 +37,18 @@ public class JobAdController {
     return "index";
   }
 
+  //  @GetMapping("/")
+//  public String getAllJobAds(@RequestParam(required = false) String seniority,
+//                             @RequestParam(required = false) String city,
+//                             @RequestParam(required = false) String datePosted,
+//                             @RequestParam(required = false) String techStack,
+//                             Model model) {
+//    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds(seniority, city, datePosted, techStack);
+//    model.addAttribute("jobAds", jobAdDTOs);
+//
+//    return "index";
+//  }
+
   @GetMapping("/{jobAdId}")
   public String getJobAdDetails(Model model, @PathVariable Long jobAdId) {
     JobAdDTO jobAdDTO = jobAdService.getJobAdById(jobAdId);
