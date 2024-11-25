@@ -2,6 +2,8 @@ package com.dreamwork.controller;
 
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.model.job.JobAd;
+import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.model.user.User;
 import com.dreamwork.service.JobAdService;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,8 +59,8 @@ public class RecruiterController {
   }
 
   @PostMapping("/delete")
-  public ResponseEntity<Recruiter> deleteRecruiter(@RequestParam Long recruiterId) {
-    recruiterService.deleteRecruiter(recruiterId);
+  public ResponseEntity<Recruiter> deleteRecruiter(@RequestParam String password ) {
+    recruiterService.deleteRecruiter(password);
     return ResponseEntity.noContent().build();
   }
 
@@ -67,5 +70,15 @@ public class RecruiterController {
     model.addAttribute("jobAds", jobAdDTOs);
 
     return "recruiter-job-ads";
+  }
+
+  @GetMapping("/job-ads/{id}")
+  public String getJobDetails(@PathVariable Long id, Model model) {
+    JobAdDTO jobAd = jobAdService.getJobAdById(id);
+    model.addAttribute("jobAd", jobAd);
+
+    List<Candidate> candidates = jobAd.getCandidates();
+    model.addAttribute("candidates", candidates);
+    return "/recruiter-job-description";
   }
 }

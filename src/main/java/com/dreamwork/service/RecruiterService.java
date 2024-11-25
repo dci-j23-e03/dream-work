@@ -65,7 +65,12 @@ public class RecruiterService {
   }
 
   @Transactional
-  public void deleteRecruiter(Long recruiterId) {
-    recruiterRepository.deleteById(recruiterId);
+  public void deleteRecruiter(String deletePassword) {
+    User user = authenticationService.getCurrentUser();
+    Recruiter recruiter = (Recruiter) user;
+    if (!passwordEncoder.matches(deletePassword, recruiter.getPassword())) {
+      throw new IncorrectPasswordException("Incorrect password!");
+    }
+    recruiterRepository.deleteById(recruiter.getUserId());
   }
 }
