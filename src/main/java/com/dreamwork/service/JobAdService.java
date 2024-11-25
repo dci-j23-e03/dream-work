@@ -51,6 +51,29 @@ public class JobAdService {
         ))
         .toList();
   }
+//  @Transactional(readOnly = true)
+//  public List<JobAdDTO> getAllJobAds(String seniority, String city, String datePosted, String techStack) {
+//    LocalDate daysAgo = null;
+//    if (datePosted != null) {
+//      daysAgo = LocalDate.parse(datePosted);
+//    }
+//
+//    List<JobAd> filteredJobAds = jobAdRepository.findJobAdsByFilters(seniority, city, daysAgo, techStack);
+//
+//    return filteredJobAds.stream()
+//        .map(jobAd -> new JobAdDTO(
+//              jobAd.getJobAdId(),
+//            jobAd.getPosition(),
+//            jobAd.getDate(),
+//            jobAd.getCompany(),
+//            jobAd.getCountry(),
+//            jobAd.getCity(),
+//            jobAd.getSeniority().toString(),
+//            jobAd.getMainTechStack(),
+//            jobAd.getDescription()
+//        ))
+//        .toList();
+//  }
 
 
   @Transactional
