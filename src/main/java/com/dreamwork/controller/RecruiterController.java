@@ -25,8 +25,9 @@ public class RecruiterController {
   private final JobAdService jobAdService;
   private final AuthenticationService authenticationService;
 
-  public RecruiterController(@Autowired RecruiterService recruiterService,
-      JobAdService jobAdService, AuthenticationService authenticationService) {
+  @Autowired
+  public RecruiterController(RecruiterService recruiterService, JobAdService jobAdService,
+      AuthenticationService authenticationService) {
     this.recruiterService = recruiterService;
     this.jobAdService = jobAdService;
     this.authenticationService = authenticationService;

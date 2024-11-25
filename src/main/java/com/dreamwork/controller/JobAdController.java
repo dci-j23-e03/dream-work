@@ -34,7 +34,15 @@ public class JobAdController {
     List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds();
     model.addAttribute("jobAds", jobAdDTOs);
 
-    return "job-ads";
+    return "index";
+  }
+
+  @GetMapping("/{jobAdId}")
+  public String getJobAdDetails(Model model, @PathVariable Long jobAdId) {
+    JobAdDTO jobAdDTO = jobAdService.getJobAdById(jobAdId);
+    model.addAttribute("job", jobAdDTO);
+
+    return "job-details";
   }
 
   @GetMapping("create")
@@ -52,7 +60,7 @@ public class JobAdController {
   }
 
 
-  @PostMapping("/{jobAdId}/apply")
+  @PostMapping("/apply/{jobAdId}")
   public String applyToJob(@PathVariable Long jobAdId,
       @RequestParam MultipartFile cvFile) {
     jobAdService.applyToJob(jobAdId, cvFile);

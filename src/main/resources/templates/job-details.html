@@ -15,7 +15,7 @@
 
 <div class="container mt-5">
     <div class="text-center">
-        <h1 class="mb-4"> Position: <span th:text="${job.title}"></span></h1>
+        <h1 class="mb-4"> Position: <span th:text="${job.position}"></span></h1>
         <h2 class="mb-4"> Company: <span th:text="${job.company}"></span></h2>
         <h6 class="mb-4 text-muted fst-italic"> Date Posted: <span th:text="${job.date}"></span></h6>
     </div>
@@ -25,11 +25,11 @@
             <div class="card-body">
 
                 <p class="card-text">Location: <span th:text="${job.city}"></span></p>
-                <p class="card-text">Main Tech Stack: <span th:text="${job.tech}"></span></p>
+                <p class="card-text">Main Tech Stack: <span th:text="${job.mainTechStack}"></span></p>
                 <p class="card-text">Experience Level: <span th:text="${job.seniority}"></span></p>
                 <p class="card-text">Description: <span th:text="${job.description}"></span></p>
 
-                <form th:action="@{'/candidate/apply/' + ${job.id}}" method="post">
+                <form th:action="@{job-ads/apply/{id}(id=${job.id})}" method="post">
                     <button type="submit" class="btn btn-primary">Apply</button>
                 </form>
 
