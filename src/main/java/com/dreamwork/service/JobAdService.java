@@ -39,6 +39,7 @@ public class JobAdService {
 
     return jobAds.stream()
         .map(jobAd -> new JobAdDTO(
+            jobAd.getJobAdId(),
             jobAd.getPosition(),
             jobAd.getDate(),
             jobAd.getCompany(),
@@ -109,6 +110,7 @@ public class JobAdService {
 
     return appliedJobAds.stream()
         .map(jobAd -> new JobAdDTO(
+            jobAd.getJobAdId(),
             jobAd.getPosition(),
             jobAd.getDate(),
             jobAd.getCompany(),
@@ -130,6 +132,7 @@ public class JobAdService {
 
     return jobAds.stream()
         .map(jobAd -> new JobAdDTO(
+            jobAd.getJobAdId(),
             jobAd.getPosition(),
             jobAd.getDate(),
             jobAd.getCompany(),
@@ -140,5 +143,28 @@ public class JobAdService {
             jobAd.getDescription()
         ))
         .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public JobAdDTO getJobAdById(Long jobAdId) {
+    Optional<JobAd> jobAdOpt = jobAdRepository.findById(jobAdId);
+
+    if (jobAdOpt.isEmpty()) {
+      throw new JobAdNotFoundException("Job Ad does not exist!");
+    }
+
+    JobAd jobAd = jobAdOpt.get();
+
+    return new JobAdDTO(
+        jobAd.getJobAdId(),
+        jobAd.getPosition(),
+        jobAd.getDate(),
+        jobAd.getCompany(),
+        jobAd.getCountry(),
+        jobAd.getCity(),
+        jobAd.getSeniority().toString(),
+        jobAd.getMainTechStack(),
+        jobAd.getDescription()
+    );
   }
 }

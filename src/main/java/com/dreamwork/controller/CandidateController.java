@@ -30,8 +30,9 @@ public class CandidateController {
   private final JobAdService jobAdService;
   private final AuthenticationService authenticationService;
 
-  public CandidateController(@Autowired CandidateService candidateService,
-      JobAdService jobAdService, AuthenticationService authenticationService) {
+  @Autowired
+  public CandidateController(CandidateService candidateService, JobAdService jobAdService,
+      AuthenticationService authenticationService) {
     this.candidateService = candidateService;
     this.jobAdService = jobAdService;
     this.authenticationService = authenticationService;

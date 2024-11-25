@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class JobAdDTO {
 
+  private Long id;
   private String position;
   private String date;
   private String company;
