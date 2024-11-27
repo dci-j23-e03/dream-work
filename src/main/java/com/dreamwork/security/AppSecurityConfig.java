@@ -39,33 +39,14 @@ public class AppSecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(auth -> auth
-        .requestMatchers("/login", "/register", "/job-ads/**").permitAll()
+        .requestMatchers("/", "/index", "/login", "/register", "/job-ads/**").permitAll()
         .requestMatchers("/candidates/**").hasRole("CANDIDATE")
         .requestMatchers("/recruiters/**").hasRole("RECRUITER")
         .anyRequest().authenticated()
     ).formLogin(auth -> auth
             .loginPage("/login")
-            .defaultSuccessUrl("/job-ads", true)
+            .defaultSuccessUrl("/job-ads/job-ads-list", true)
             .permitAll()
-//            .successHandler((request, response, authentication) -> {
-//              String redirectUrl = request.getParameter("redirect");
-//
-//              // If there's a 'redirect' parameter, use it to redirect the user
-//              if (redirectUrl != null && !redirectUrl.isEmpty()) {
-//                response.sendRedirect(redirectUrl);
-//              } else {
-//                // Default redirect based on user role
-//                String role = authentication.getAuthorities().toString();
-//                if (role.contains("ROLE_CANDIDATE")) {
-//                  response.sendRedirect("/candidate-dashboard");
-//                } else if (role.contains("ROLE_RECRUITER")) {
-//                  response.sendRedirect("/recruiter-dashboard");
-//                } else {
-//                  response.sendRedirect(
-//                      "/job-ads"); //will need to be changed to another default page
-//                }
-//              }
-//            })
     ).logout(logout -> logout
         .logoutUrl("/logout")
         .logoutSuccessUrl("/login?logout")

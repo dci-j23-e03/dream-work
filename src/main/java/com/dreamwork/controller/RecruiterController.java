@@ -3,8 +3,6 @@ package com.dreamwork.controller;
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
-import com.dreamwork.model.job.JobAd;
-import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.model.user.User;
 import com.dreamwork.service.CandidateService;

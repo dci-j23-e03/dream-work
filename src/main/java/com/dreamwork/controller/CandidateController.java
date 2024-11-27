@@ -60,11 +60,6 @@ public class CandidateController {
     return "candidate-update";
   }
 
-  @PostMapping("/delete")
-  public ResponseEntity<Candidate> deleteCandidate(@RequestParam Long candidateId) {
-    candidateService.deleteCandidate(candidateId);
-    return ResponseEntity.noContent().build();
-  }
 
   @GetMapping("/job-ads")
   public String getAllJobAdsForCandidate(Model model) {

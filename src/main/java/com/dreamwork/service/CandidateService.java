@@ -74,8 +74,15 @@ public class CandidateService {
   }
 
   @Transactional
-  public void deleteCandidate(Long candidateId) {
-    candidateRepository.deleteById(candidateId);
+  public boolean deleteCandidate(String deletePassword) {
+    User user = authenticationService.getCurrentUser();
+
+    Candidate candidate = (Candidate) user;
+    if (!passwordEncoder.matches(deletePassword, candidate.getPassword())) {
+      throw new IncorrectPasswordException("Incorrect password!");
+    }
+    candidateRepository.deleteById(candidate.getUserId());
+    return true;
   }
 
   @Transactional
@@ -91,7 +98,6 @@ public class CandidateService {
     if (candidate.getCvFile() == null || candidate.getCvFileName() == null) {
       throw new CvFileNotFoundException("CV file not found!");
     }
-
     return candidate;
   }
 

@@ -15,6 +15,25 @@
     padding: 0;
   }
 
+  .container {
+    max-width: 1200px;
+  }
+
+  .row {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .col-md-3 {
+    position: sticky; /* Sidebar stays fixed while scrolling */
+    top: 20px;
+    height: 100%;
+  }
+
+  .col-md-9 {
+    padding-left: 15px;
+  }
+
   nav {
     display: flex;
     justify-content: flex-end;
@@ -92,9 +111,56 @@
     <a type="button" class="btn btn-primary" th:href="@{/register}">Register</a>
   </div>
 </nav>
-<div>
+<div class="container mt-4">
   <h1>Jobs</h1>
   <hr>
+  <!--   Filter Sidebar-->
+  <div class="row">
+    <div class="col-md-3">
+      <form action="/job-ads" method="get" class="p-3 border rounded bg-light">
+        <h5>Filters</h5>
+
+        <!-- Seniority Dropdown -->
+        <div class="mb-3">
+          <label for="seniority" class="form-label">Seniority</label>
+          <select class="form-select" name="seniority" id="seniority">
+            <option value="">Select Seniority</option>
+            <option value="Junior">Junior</option>
+            <option value="Mid">Mid</option>
+            <option value="Senior">Senior</option>
+            <option value="Lead">Lead</option>
+          </select>
+        </div>
+
+        <!-- City Input -->
+        <div class="mb-3">
+          <label for="city" class="form-label">City</label>
+          <input type="text" class="form-control" name="city" id="city" placeholder="Enter city">
+        </div>
+
+        <!-- Date Posted Options -->
+        <div class="mb-3">
+          <label for="datePosted" class="form-label">Date Posted</label>
+          <select class="form-select" name="datePosted" id="datePosted">
+            <option value="">Select Date Range</option>
+            <option value="1">Past 24 Hours</option>
+            <option value="3">Past 3 Days</option>
+            <option value="7">Past Week</option>
+            <option value="30">Past Month</option>
+          </select>
+        </div>
+
+        <!-- Tech Stack Input -->
+        <div class="mb-3">
+          <label for="techStack" class="form-label">Tech Stack</label>
+          <input type="text" class="form-control" name="techStack" id="techStack" placeholder="Enter tech stack">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+      </form>
+    </div>
+  </div>
+
   <div>
     <!-- Iterate over the list of jobs -->
     <ul th:each="job : ${jobAds}">
