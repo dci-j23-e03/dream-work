@@ -3,6 +3,8 @@ package com.dreamwork.controller;
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.model.job.JobAd;
+import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.model.user.User;
 import com.dreamwork.service.CandidateService;
@@ -10,6 +12,10 @@ import com.dreamwork.service.JobAdService;
 import com.dreamwork.service.RecruiterService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,13 +33,11 @@ public class RecruiterController {
   private final RecruiterService recruiterService;
   private final JobAdService jobAdService;
   private final CandidateService candidateService;
-
   private final AuthenticationService authenticationService;
 
   @Autowired
   public RecruiterController(RecruiterService recruiterService, JobAdService jobAdService,
-      CandidateService candidateService,
-      AuthenticationService authenticationService) {
+      CandidateService candidateService, AuthenticationService authenticationService) {
     this.recruiterService = recruiterService;
     this.jobAdService = jobAdService;
     this.candidateService = candidateService;
@@ -63,9 +67,23 @@ public class RecruiterController {
   }
 
   @PostMapping("/delete")
-  public ResponseEntity<Recruiter> deleteRecruiter(@RequestParam String password ) {
+  public ResponseEntity<Recruiter> deleteRecruiter(@RequestParam String password) {
     recruiterService.deleteRecruiter(password);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/job-ads/create")
+  public String getCreateJobAdForm(Model model) {
+    model.addAttribute("jobAd", new JobAd());
+
+    return "create-job-ad";
+  }
+
+  @PostMapping("/job-ads/create")
+  public String createJobAd(JobAd jobAd) {
+    jobAdService.createJobAd(jobAd);
+
+    return "redirect:/recruiters";
   }
 
   @GetMapping("/job-ads")
@@ -77,12 +95,26 @@ public class RecruiterController {
   }
 
   @GetMapping("/job-ads/{id}")
-  public String getJobDetails(@PathVariable Long id, Model model) {
+  public String getJobAdDetails(@PathVariable Long id, Model model) {
     JobAdDTO jobAd = jobAdService.getJobAdById(id);
     model.addAttribute("jobAd", jobAd);
 
     List<CandidateDTO> candidates = candidateService.getAllCandidatesForJobAd(id);
     model.addAttribute("candidates", candidates);
     return "/recruiter-job-description";
+  }
+
+  @GetMapping("/job-ads/view-cv/candidate/{candidateId}")
+  public ResponseEntity<byte[]> viewCv(@PathVariable Long candidateId) {
+    Candidate candidate = candidateService.viewCv(candidateId);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_PDF);
+    headers.setContentDisposition(ContentDisposition
+        .inline()
+        .filename(candidate.getCvFileName())
+        .build());
+
+    return ResponseEntity.status(HttpStatus.OK).headers(headers).body(candidate.getCvFile());
   }
 }
