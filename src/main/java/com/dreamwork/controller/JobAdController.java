@@ -35,15 +35,24 @@ public class JobAdController {
     this.authenticationService = authenticationService;
   }
 
-  @GetMapping
+  //figure out how to get the job ads to display on the landing page
+
+//  @GetMapping("/")
+//  public String landingPage(Model model) {
+//    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds();
+//    model.addAttribute("jobAds", jobAdDTOs);
+//    return "job-ads-list";
+//  }
+
+  @GetMapping("/job-ads-list")
   public String getAllJobAds(Model model) {
     List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds();
     model.addAttribute("jobAds", jobAdDTOs);
 
-    return "index";
+    return "job-ads-list";
   }
 
-  //  @GetMapping("/")
+  //  @GetMapping("/job-ads-list")
 //  public String getAllJobAds(@RequestParam(required = false) String seniority,
 //                             @RequestParam(required = false) String city,
 //                             @RequestParam(required = false) String datePosted,

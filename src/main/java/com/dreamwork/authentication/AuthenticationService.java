@@ -5,11 +5,14 @@ import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.model.user.User;
 import com.dreamwork.repository.CandidateRepository;
 import com.dreamwork.repository.RecruiterRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 public class AuthenticationService {
@@ -38,4 +41,9 @@ public class AuthenticationService {
       throw new UsernameNotFoundException("User not found with username: " + username);
     }
   }
+
+  public void logout() {
+    SecurityContextHolder.clearContext();
+    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    request.getSession().invalidate();  }
 }
