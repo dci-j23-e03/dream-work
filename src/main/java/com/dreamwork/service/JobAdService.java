@@ -99,7 +99,11 @@ public class JobAdService {
     }
 
     if (!"application/pdf".equals(cvFile.getContentType())) {
-      throw new CvFileSaveException("CV file must be in PDF format!");
+      throw new CvFileSaveException("Application document must be in .pdf format!");
+    }
+
+    if (cvFile.getSize() > 10 * 1024 * 1024) {
+      throw new CvFileSaveException("File size must not exceed 10MB!");
     }
 
     JobAd jobAd = jobAdOpt.get();

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Job Description</title>
@@ -29,9 +29,9 @@
                 <p class="card-text">Experience Level: <span th:text="${job.seniority}"></span></p>
                 <p class="card-text">Description: <span th:text="${job.description}"></span></p>
 
-                <form th:action="@{job-ads/apply/{id}(id=${job.id})}" method="post">
-                    <button type="submit" class="btn btn-primary">Apply</button>
-                </form>
+                <p>Apply button will be visible only if you are logged in as a candidate.</p>
+                <a sec:authorize="hasRole('CANDIDATE')"
+                   th:href="@{/job-ads/apply/{id}(id=${job.id})}" target="_blank">Apply</a>
 
             </div>
         </div>

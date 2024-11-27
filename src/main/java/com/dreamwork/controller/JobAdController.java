@@ -1,7 +1,10 @@
 package com.dreamwork.controller;
 
+import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.exception.CvFileSaveException;
+import com.dreamwork.exception.JobAdNotFoundException;
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.service.CandidateService;
 import com.dreamwork.service.JobAdService;
@@ -22,11 +25,14 @@ public class JobAdController {
 
   private final JobAdService jobAdService;
   private final CandidateService candidateService;
+  private final AuthenticationService authenticationService;
 
   @Autowired
-  public JobAdController(JobAdService jobAdService, CandidateService candidateService) {
+  public JobAdController(JobAdService jobAdService, CandidateService candidateService,
+      AuthenticationService authenticationService) {
     this.jobAdService = jobAdService;
     this.candidateService = candidateService;
+    this.authenticationService = authenticationService;
   }
 
   @GetMapping
@@ -71,13 +77,26 @@ public class JobAdController {
     return "redirect:/recruiters";
   }
 
+  @GetMapping("/apply/{jobAdId}")
+  public String getApplyToJobForm(Model model, @PathVariable Long jobAdId) {
+    model.addAttribute("jobAdId", jobAdId);
+    model.addAttribute("candidate", authenticationService.getCurrentUser());
+
+    return "candidate-apply";
+  }
 
   @PostMapping("/apply/{jobAdId}")
-  public String applyToJob(@PathVariable Long jobAdId,
+  public String applyToJob(Model model, @PathVariable Long jobAdId,
       @RequestParam MultipartFile cvFile) {
-    jobAdService.applyToJob(jobAdId, cvFile);
-
-    return "redirect:/candidates";
+    try {
+      jobAdService.applyToJob(jobAdId, cvFile);
+      return "redirect:/candidates";
+    } catch (JobAdNotFoundException | CvFileSaveException e) {
+      model.addAttribute("errorMessage", e.getMessage());
+      model.addAttribute("jobAdId", jobAdId);
+      model.addAttribute("candidate", authenticationService.getCurrentUser());
+      return "candidate-apply";
+    }
   }
 
   @GetMapping("/{jobAdId}/candidates")
