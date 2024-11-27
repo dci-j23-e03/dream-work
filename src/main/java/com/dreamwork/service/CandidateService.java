@@ -104,6 +104,7 @@ public class CandidateService {
 
     return candidates.stream()
         .map(candidate -> new CandidateDTO(
+            candidate.getUserId(),
             candidate.getName(),
             candidate.getLastname(),
             candidate.getEmail()

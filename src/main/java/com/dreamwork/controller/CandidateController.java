@@ -68,13 +68,12 @@ public class CandidateController {
 
   @GetMapping("/job-ads")
   public String getAllJobAdsForCandidate(Model model) {
-    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAdsForCandidate();
-    model.addAttribute("jobAds", jobAdDTOs);
-
-    return "candidate-job-ads";
+    List<JobAdDTO> listAppliedJobs = jobAdService.getAllJobAdsForCandidate();
+    model.addAttribute("listAppliedJobs", listAppliedJobs);
+    return "candidate-list-applied-jobs";
   }
 
-  @GetMapping("/{candidateId}/view-cv")
+  @GetMapping("/view-cv/{candidateId}")
   public ResponseEntity<byte[]> viewCv(@PathVariable Long candidateId) {
     Candidate candidate = candidateService.viewCv(candidateId);
 

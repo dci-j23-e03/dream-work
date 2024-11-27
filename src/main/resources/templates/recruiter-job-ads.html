@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +19,31 @@
             font-size: 28px;
             color: #333;
             text-align: center;
+        }
+
+         nav {
+             display: flex;
+             justify-content: flex-end;
+             padding: 5px;
+             background-color: lightgray;
+         }
+
+        nav button:hover {
+            transform: scale(1.05);
+        }
+
+        nav a {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        nav a:hover {
+            transform: scale(1.05);
+        }
+
+        nav div {
+            display: flex;
+            align-items: center;
         }
 
         .job-card {
@@ -105,23 +130,29 @@
     </style>
 </head>
 <body>
-<nav class="d-flex justify-content-end">
-    <!-- Conditional rendering for authentication -->
-    <div th:if="${#authentication.principal == null}">
-        <a href="@{/login}" class="btn btn-outline-primary">Login</a>
-        <a href="@{/register}" class="btn btn-outline-secondary">Register</a>
-    </div>
-    <div th:if="${#authentication.principal != null}">
-        <form th:action="@{/logout}" method="post" class="d-inline">
-            <button type="submit" class="btn btn-outline-danger">Logout</button>
+<nav>
+    <!--  Logged-in user-->
+    <div sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn btn-danger">Logout</button>
         </form>
+        <a type="button" class="btn btn-secondary"
+           sec:authorize="hasRole('CANDIDATE')" th:href="@{/candidates}">Account</a>
+        <a type="button" class="btn btn-secondary"
+           sec:authorize="hasRole('RECRUITER')" th:href="@{/recruiters}">Account</a>
+    </div>
+    <!-- Not logged-in -->
+    <div sec:authorize="!isAuthenticated()">
+        <a type="button" class="btn btn-success" th:href="@{/login}">Login</a>
+        <a type="button" class="btn btn-primary" th:href="@{/register}">Register</a>
     </div>
 </nav>
 <h2>Your Created Job Ads</h2>
 <div class="row">
     <!-- Loop through job ads -->
     <div th:each="job : ${jobAds}" class="col-12 mb-3">
-        <a th:href="@{/recruiters/job-ads/{id}(id=${job.id})}" class="job-card">
+        <a target="_blank" th:href="@{/recruiters/job-ads/{id}(id=${job.id})}" class="job-card">
             <div class="card">
                 <div class="card-body d-flex align-items-center">
                     <div class="job-details flex-grow-1">

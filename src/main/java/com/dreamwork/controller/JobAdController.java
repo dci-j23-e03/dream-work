@@ -87,4 +87,5 @@ public class JobAdController {
 
     return "job-ad-candidates";
   }
+
 }
