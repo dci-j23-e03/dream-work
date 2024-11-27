@@ -98,6 +98,7 @@ public class CandidateService {
     if (candidate.getCvFile() == null || candidate.getCvFileName() == null) {
       throw new CvFileNotFoundException("CV file not found!");
     }
+
     return candidate;
   }
 

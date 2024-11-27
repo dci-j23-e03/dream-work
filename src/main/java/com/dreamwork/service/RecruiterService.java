@@ -68,10 +68,15 @@ public class RecruiterService {
   public boolean deleteRecruiter(String deletePassword) {
     User user = authenticationService.getCurrentUser();
     Recruiter recruiter = (Recruiter) user;
+
     if (!passwordEncoder.matches(deletePassword, recruiter.getPassword())) {
       throw new IncorrectPasswordException("Incorrect password!");
     }
+
+//    recruiter.setJobAds(List.of());
+
     recruiterRepository.deleteById(recruiter.getUserId());
+
     return true;
   }
 }
