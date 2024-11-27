@@ -1,11 +1,13 @@
 package com.dreamwork.controller;
 
 import com.dreamwork.authentication.AuthenticationService;
+import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.model.user.User;
+import com.dreamwork.service.CandidateService;
 import com.dreamwork.service.JobAdService;
 import com.dreamwork.service.RecruiterService;
 import java.util.List;
@@ -26,13 +28,17 @@ public class RecruiterController {
 
   private final RecruiterService recruiterService;
   private final JobAdService jobAdService;
+  private final CandidateService candidateService;
+
   private final AuthenticationService authenticationService;
 
   @Autowired
   public RecruiterController(RecruiterService recruiterService, JobAdService jobAdService,
+      CandidateService candidateService,
       AuthenticationService authenticationService) {
     this.recruiterService = recruiterService;
     this.jobAdService = jobAdService;
+    this.candidateService = candidateService;
     this.authenticationService = authenticationService;
   }
 
@@ -77,7 +83,7 @@ public class RecruiterController {
     JobAdDTO jobAd = jobAdService.getJobAdById(id);
     model.addAttribute("jobAd", jobAd);
 
-    List<Candidate> candidates = jobAd.getCandidates();
+    List<CandidateDTO> candidates = candidateService.getAllCandidatesForJobAd(id);
     model.addAttribute("candidates", candidates);
     return "/recruiter-job-description";
   }

@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CandidateDTO {
 
+  private Long id;
   private String name;
   private String lastname;
   private String email;

@@ -52,13 +52,13 @@
   <div class="applicants">
     <h3>Applicants</h3>
     <ul>
-      <li th:each="candidate : ${jobAd.candidates}">
+      <li th:each="candidate : ${candidates}">
         <span th:text="${candidate.name}">Applicant Name</span> -
         <span th:text="${candidate.email}">applicant@example.com</span>
-        <a th:href="@{/candidates/details/{id}(id=${candidate.userId})}">View CV</a>
+        <a target="_blank" th:href="@{/candidates/view-cv/{id}(id=${candidate.id})}">View CV</a>
           <!--        button for viewing cv-->
       </li>
-      <li th:if="${#lists.isEmpty(jobAd.candidates)}">No applicants yet.</li>
+      <li th:if="${#lists.isEmpty(candidates)}">No applicants yet.</li>
     </ul>
   </div>
 
