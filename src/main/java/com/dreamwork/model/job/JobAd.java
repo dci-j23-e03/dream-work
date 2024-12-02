@@ -3,6 +3,7 @@ package com.dreamwork.model.job;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

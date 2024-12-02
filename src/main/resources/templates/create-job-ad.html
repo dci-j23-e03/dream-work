@@ -76,7 +76,7 @@
 <body>
 <div class="form-container">
   <h2>Create Job Ad</h2>
-  <form th:action="@{recruiters/job-ads/create}" method="post" th:object="${jobAd}">
+  <form th:action="@{/recruiters/job-ads/create}" method="post" th:object="${jobAd}">
 
     <label for="position">Position:</label>
     <input type="text" id="position" th:field="*{position}" required>
