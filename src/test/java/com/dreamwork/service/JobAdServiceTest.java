@@ -1,138 +1,137 @@
 package com.dreamwork.service;
 
-import static com.dreamwork.model.job.Seniority.MID_LEVEL;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.exception.CvFileSaveException;
+import com.dreamwork.exception.JobAdNotFoundException;
 import com.dreamwork.model.job.JobAd;
+import com.dreamwork.model.job.Seniority;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.repository.CandidateRepository;
 import com.dreamwork.repository.JobAdRepository;
-import com.dreamwork.repository.RecruiterRepository;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.multipart.MultipartFile;
 
-public class JobAdServiceTest {
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+class JobAdServiceTest {
 
   @Mock
   private JobAdRepository jobAdRepository;
 
   @Mock
-  private RecruiterRepository recruiterRepository;
+  private CandidateRepository candidateRepository;
 
   @Mock
-  private CandidateRepository candidateRepository;
+  private AuthenticationService authenticationService;
 
   @InjectMocks
   private JobAdService jobAdService;
 
-  private Recruiter recruiter;
   private JobAd jobAd;
   private Candidate candidate;
+  private MultipartFile cvFile;
 
   @BeforeEach
   void setUp() {
-    MockitoAnnotations.openMocks(this);
-    recruiter = new Recruiter();
-    recruiter.setUserId(1L);
-    recruiter.setJobAds(new ArrayList<>());
+    jobAdService = new JobAdService(jobAdRepository, candidateRepository, authenticationService);
 
     jobAd = new JobAd();
     jobAd.setJobAdId(1L);
-    jobAd.setCandidates(new ArrayList<>());
+    jobAd.setPosition("Java Developer");
+    jobAd.setCompany("Apple");
+    jobAd.setCountry("Poland");
+    jobAd.setCity("Warsaw");
+    jobAd.setSeniority(Seniority.JUNIOR);
+    jobAd.setMainTechStack("Java, Spring");
+    jobAd.setDescription("We are looking for a Java Developer");
 
-    candidate = new Candidate();
-    candidate.setUserId(2L);
-    candidate.setAppliedJobAds(new ArrayList<>());
+    candidate = new Candidate("user", "encodedPassword",
+        "John", "Doe", "john.doe@example.com");
+
+    cvFile = mock(MultipartFile.class);
   }
 
   @Test
-  void testGetAllJobAds() {
-    JobAd jobAd = new JobAd();
-    jobAd.setPosition("Software Engineer");
-    jobAd.setCountry("USA");
-    jobAd.setCity("New York");
-    jobAd.setSeniority(MID_LEVEL);
-    jobAd.setMainTechStack("Java, Spring Boot");
-    jobAd.setDescription("Developing web applications.");
+  void createJobAd_shouldCreateJobAd_whenAuthenticatedRecruiter() {
+    Recruiter recruiter = new Recruiter("user", "encodedPassword",
+        "John", "Doe", "john.doe@example.com");
 
-    Recruiter recruiter1 = new Recruiter();
-    recruiter1.setName("John");
-    recruiter1.setLastname("Williams");
-    recruiter1.setCompanyName("Google");
-    jobAd.setRecruiter(recruiter1);
+    when(authenticationService.getCurrentUser()).thenReturn(recruiter);
 
-    List<JobAd> jobAds = List.of(jobAd);
+    jobAdService.createJobAd(jobAd);
 
-    when(jobAdRepository.findAll()).thenReturn(jobAds);
-
-    List<JobAdDTO> jobAdDTOS = jobAdService.getAllJobAds();
-
-    verify(jobAdRepository).findAll();
-    assertEquals(1, jobAdDTOS.size());
-    JobAdDTO jobAdDTO = jobAdDTOS.get(0);
-    assertEquals(jobAd.getPosition(), jobAdDTO.getPosition());
-    assertEquals(jobAd.getCountry(), jobAdDTO.getCountry());
-    assertEquals(jobAd.getCity(), jobAdDTO.getCity());
-    assertEquals(jobAd.getSeniority().toString(), jobAdDTO.getSeniority().toString());
-    assertEquals(jobAd.getMainTechStack(), jobAdDTO.getMainTechStack());
-    assertEquals(jobAd.getDescription(), jobAdDTO.getDescription());
-    assertEquals(recruiter1.getName(), jobAdDTO.getRecruiter().getName());
-    assertEquals(recruiter1.getLastname(), jobAdDTO.getRecruiter().getLastname());
-    assertEquals(recruiter1.getCompanyName(), jobAdDTO.getRecruiter().getCompanyName());
+    assertEquals(jobAd.getRecruiter(), recruiter);
+    verify(jobAdRepository, times(1)).save(jobAd);
   }
 
   @Test
-  void testCreateJobAd() {
-    when(recruiterRepository.findById(recruiter.getUserId())).thenReturn(Optional.of(recruiter));
-    when(jobAdRepository.save(any(JobAd.class))).thenReturn(jobAd);
+  void applyToJobAd_shouldApplyToJobAd_whenValidJobAdAndAuthenticatedCandidate() {
+    when(jobAdRepository.findById(1L)).thenReturn(Optional.of(jobAd));
+    when(authenticationService.getCurrentUser()).thenReturn(candidate);
+    when(cvFile.getContentType()).thenReturn("application/pdf");
+    when(cvFile.getSize()).thenReturn(1024L);
 
-    jobAdService.createJobAd(jobAd, recruiter.getUserId());
-    assertEquals(recruiter, jobAd.getRecruiter());
-    verify(jobAdRepository).save(jobAd);
+    jobAdService.applyToJob(jobAd.getJobAdId(), cvFile);
+
+    verify(candidateRepository, times(1)).save(candidate);
+    verify(jobAdRepository, times(1)).save(jobAd);
   }
 
-
-  @SneakyThrows
   @Test
-  void testApplyToJob() {
-    MultipartFile cvFile = mock(MultipartFile.class);
-    byte[] mockCvBytes = new byte[]{0x1, 0x2, 0x3};
-    when(cvFile.getBytes()).thenReturn(mockCvBytes);
-    when(cvFile.getOriginalFilename()).thenReturn("resume.pdf");
+  void applyToJobAd_shouldThrowException_whenCvFileIsNotPdf() {
+    when(jobAdRepository.findById(1L)).thenReturn(Optional.of(jobAd));
+    when(authenticationService.getCurrentUser()).thenReturn(candidate);
+    when(cvFile.getContentType()).thenReturn("application/json");
 
-    when(jobAdRepository.findById(jobAd.getJobAdId())).thenReturn(Optional.of(jobAd));
-    when(candidateRepository.findById(candidate.getUserId())).thenReturn(Optional.of(candidate));
+    assertThrows(CvFileSaveException.class, () -> jobAdService.applyToJob(1L, cvFile));
+  }
 
-    jobAdService.applyToJob(jobAd.getJobAdId(), candidate.getUserId(), cvFile);
+  @Test
+  void applyToJobAd_shouldThrowException_whenCvFileSizeExceedsLimit() {
+    when(jobAdRepository.findById(1L)).thenReturn(Optional.of(jobAd));
+    when(authenticationService.getCurrentUser()).thenReturn(candidate);
+    when(cvFile.getContentType()).thenReturn("application/pdf");
+    when(cvFile.getSize()).thenReturn(10 * 1024 * 1024 + 1L);
 
-    verify(jobAdRepository).findById(jobAd.getJobAdId());
-    verify(candidateRepository).findById(candidate.getUserId());
+    assertThrows(CvFileSaveException.class, () -> jobAdService.applyToJob(1L, cvFile));
+  }
 
-    assertTrue(jobAd.getCandidates().contains(candidate),
-        " Candidate should be added to the job ad");
-    assertTrue(candidate.getAppliedJobAds().contains(jobAd),
-        "Job ad should be added to the candidate");
+  @Test
+  void getJobAdById_shouldReturnJobAd_whenJobAdExists() {
+    when(jobAdRepository.findById(1L)).thenReturn(Optional.of(jobAd));
 
+    JobAdDTO foundJobAd = jobAdService.getJobAdById(1L);
 
-    assertArrayEquals(mockCvBytes, candidate.getCvFile(),
-        "CV file should be saved to the candidate");
-    assertEquals("resume.pdf", candidate.getCvFileName(),
-        "CV file name should be saved to the candidate");
+    assertEquals(jobAd.getJobAdId(), foundJobAd.getId());
+    assertEquals(jobAd.getPosition(), foundJobAd.getPosition());
+    assertEquals(jobAd.getCompany(), foundJobAd.getCompany());
+    assertEquals(jobAd.getCountry(), foundJobAd.getCountry());
+    assertEquals(jobAd.getCity(), foundJobAd.getCity());
+    assertEquals(jobAd.getSeniority().toString(), foundJobAd.getSeniority());
+    assertEquals(jobAd.getMainTechStack(), foundJobAd.getMainTechStack());
+    assertEquals(jobAd.getDescription(), foundJobAd.getDescription());
+  }
+
+  @Test
+  void getJobAdById_shouldThrowException_whenJobAdDoesNotExist() {
+    when(jobAdRepository.findById(1L)).thenReturn(Optional.empty());
+
+    assertThrows(JobAdNotFoundException.class, () -> jobAdService.getJobAdById(1L));
   }
 }

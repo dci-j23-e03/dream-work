@@ -10,6 +10,7 @@ import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.model.user.User;
 import com.dreamwork.repository.CandidateRepository;
 import com.dreamwork.repository.JobAdRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +109,22 @@ public class JobAdService {
 
     jobAdRepository.save(jobAd);
   }
+
+
+  @Transactional
+  public void deleteJobAdById(Long jobAdId) {
+    JobAd jobAd = jobAdRepository.findById(jobAdId)
+        .orElseThrow(() -> new EntityNotFoundException("JobAd not found"));
+
+    for (Candidate candidate : jobAd.getCandidates()) {
+      candidate.getAppliedJobAds().remove(jobAd);
+      candidateRepository.save(candidate);
+    }
+    jobAd.getCandidates().clear();
+
+    jobAdRepository.delete(jobAd);
+  }
+
 
   @Transactional
   public void applyToJob(Long jobAdId, MultipartFile cvFile) {

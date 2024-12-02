@@ -32,6 +32,8 @@
 
 
             <form th:action="@{/delete-account}" method="post" th:object="${user}" class="mt-3">
+<!--                <input type="hidden" name="_method" value="delete"/>-->
+
                 <div class="mb-3">
                     <label for="password" class="form-label">Password:</label>
                     <input type="password" id="password" th:field="*{password}" class="form-control" required>

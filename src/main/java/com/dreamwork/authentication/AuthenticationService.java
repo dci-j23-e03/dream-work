@@ -44,6 +44,9 @@ public class AuthenticationService {
 
   public void logout() {
     SecurityContextHolder.clearContext();
-    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-    request.getSession().invalidate();  }
+    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+        .getRequestAttributes())
+        .getRequest();
+    request.getSession().invalidate();
+  }
 }

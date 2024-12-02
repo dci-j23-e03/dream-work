@@ -3,6 +3,7 @@ package com.dreamwork.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,23 +40,24 @@ public class AppSecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(auth -> auth
-        .requestMatchers("/", "/index", "/login", "/register", "/job-ads/**").permitAll()
+        .requestMatchers("/", "/login", "/register", "/job-ads/**").permitAll()
         .requestMatchers("/candidates/**").hasRole("CANDIDATE")
         .requestMatchers("/recruiters/**").hasRole("RECRUITER")
+        .requestMatchers(HttpMethod.DELETE, "/recruiters/job-ads/delete/**").authenticated()
         .anyRequest().authenticated()
     ).formLogin(auth -> auth
-            .loginPage("/login")
-            .defaultSuccessUrl("/job-ads/job-ads-list", true)
-            .permitAll()
-    ).logout(logout -> logout
-        .logoutUrl("/logout")
-        .logoutSuccessUrl("/login?logout")
-        .logoutSuccessHandler(customLogoutSuccessHandler())
-        .deleteCookies("JSESSIONID")
-        .invalidateHttpSession(true)
+        .loginPage("/login")
+        .defaultSuccessUrl("/job-ads", true)
         .permitAll()
-    );
-
+    ).logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout")
+//        .logoutSuccessHandler(customLogoutSuccessHandler())
+            .deleteCookies("JSESSIONID")
+            .invalidateHttpSession(true)
+            .permitAll()
+    )
+.csrf(csrf -> csrf.ignoringRequestMatchers("/recruiters/job-ads/delete/**"));
     return http.build();
   }
 

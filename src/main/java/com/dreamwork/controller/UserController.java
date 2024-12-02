@@ -9,7 +9,6 @@ import com.dreamwork.model.user.User;
 import com.dreamwork.service.CandidateService;
 import com.dreamwork.service.RecruiterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +28,7 @@ public class UserController {
 
   @Autowired
   public UserController(CandidateService candidateService, RecruiterService recruiterService,
-                        AuthenticationService authenticationService) {
+      AuthenticationService authenticationService) {
     this.candidateService = candidateService;
     this.recruiterService = recruiterService;
     this.authenticationService = authenticationService;
@@ -66,8 +65,8 @@ public class UserController {
 
 
   @PostMapping("/delete-account")
-  public String deleteAccount(@RequestParam String password,
-                              Model model, RedirectAttributes redirectAttributes) {
+  public String deleteAccount(@RequestParam String password, Model model,
+      RedirectAttributes redirectAttributes) {
 
     User currentUser = authenticationService.getCurrentUser();
     boolean isDeleted = false;
@@ -80,12 +79,13 @@ public class UserController {
 
     if (isDeleted) {
       authenticationService.logout();
-      redirectAttributes.addFlashAttribute("successMessage", "Account successfully deleted.");
-      return "redirect:/job-ads/job-ads-list?success";
+      redirectAttributes.addFlashAttribute(
+          "successMessage", "Account successfully deleted.");
+      return "redirect:/job-ads?success";
     } else {
-      model.addAttribute("errorMessage", "Failed to delete account. Please try again.");
+      model.addAttribute(
+          "errorMessage", "Failed to delete account. Please try again.");
       return "delete-account";
     }
   }
-
 }

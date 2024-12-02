@@ -6,6 +6,7 @@ import com.dreamwork.exception.IncorrectPasswordException;
 import com.dreamwork.exception.UserAlreadyExistsException;
 import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.model.user.User;
+import com.dreamwork.repository.JobAdRepository;
 import com.dreamwork.repository.RecruiterRepository;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class RecruiterService {
 
   private final RecruiterRepository recruiterRepository;
+  private final JobAdRepository jobAdRepository;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationService authenticationService;
 
   @Autowired
-  public RecruiterService(RecruiterRepository recruiterRepository,
+  public RecruiterService(RecruiterRepository recruiterRepository, JobAdRepository jobAdRepository,
       PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
     this.recruiterRepository = recruiterRepository;
+    this.jobAdRepository = jobAdRepository;
     this.passwordEncoder = passwordEncoder;
     this.authenticationService = authenticationService;
   }
@@ -68,10 +71,14 @@ public class RecruiterService {
   public boolean deleteRecruiter(String deletePassword) {
     User user = authenticationService.getCurrentUser();
     Recruiter recruiter = (Recruiter) user;
+
     if (!passwordEncoder.matches(deletePassword, recruiter.getPassword())) {
       throw new IncorrectPasswordException("Incorrect password!");
     }
+
+    jobAdRepository.deleteAllByRecruiter(recruiter);
     recruiterRepository.deleteById(recruiter.getUserId());
+
     return true;
   }
 }
