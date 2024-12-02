@@ -10,6 +10,7 @@ import com.dreamwork.service.CandidateService;
 import com.dreamwork.service.JobAdService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,10 +45,27 @@ public class JobAdController {
 //    return "job-ads-list";
 //  }
 
-  @GetMapping("/job-ads-list")
-  public String getAllJobAds(Model model) {
-    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds();
-    model.addAttribute("jobAds", jobAdDTOs);
+//  @GetMapping("/job-ads-list")
+//  public String getAllJobAds(Model model) {
+//    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds();
+//    model.addAttribute("jobAds", jobAdDTOs);
+//
+//    return "job-ads-list";
+//  }
+
+  @GetMapping
+  public String listJobs(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      Model model) {
+    Page<JobAdDTO> jobPage = jobAdService.getJobs(page, size);
+
+    long totalJobs = jobPage.getTotalElements();
+
+    model.addAttribute("jobAds", jobPage.getContent());
+    model.addAttribute("currentPage", page);
+    model.addAttribute("totalPages", jobPage.getTotalPages());
+    model.addAttribute("totalJobs", totalJobs);
 
     return "job-ads-list";
   }
@@ -83,7 +101,7 @@ public class JobAdController {
   public String createJobAd(JobAd jobAd) {
     jobAdService.createJobAd(jobAd);
 
-    return "redirect:/recruiters";
+    return "redirect:/recruiters?successCreate=true";
   }
 
   @GetMapping("/apply/{jobAdId}")
@@ -99,7 +117,7 @@ public class JobAdController {
       @RequestParam MultipartFile cvFile) {
     try {
       jobAdService.applyToJob(jobAdId, cvFile);
-      return "redirect:/candidates";
+      return "redirect:/candidates?successApply=true";
     } catch (JobAdNotFoundException | CvFileSaveException e) {
       model.addAttribute("errorMessage", e.getMessage());
       model.addAttribute("jobAdId", jobAdId);

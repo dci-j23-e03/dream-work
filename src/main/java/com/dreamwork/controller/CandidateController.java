@@ -57,7 +57,7 @@ public class CandidateController {
       @RequestParam String currentPassword) {
     candidateService.updateCandidate(candidate, currentPassword);
 
-    return "candidate-update";
+    return "redirect:/candidates?successUpdate=true";
   }
 
 

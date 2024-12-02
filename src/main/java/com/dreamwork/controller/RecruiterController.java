@@ -59,7 +59,7 @@ public class RecruiterController {
       @RequestParam String currentPassword) {
     recruiterService.updateRecruiter(recruiter, currentPassword);
 
-    return "recruiter-update";
+    return "redirect:/recruiters?successUpdate=true";
   }
 
   @PostMapping("/delete")

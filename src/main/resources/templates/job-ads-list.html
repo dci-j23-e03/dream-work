@@ -9,49 +9,151 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    background-color: white;
-    height: 100vh;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
   }
 
   .container {
-    max-width: 1200px;
+    max-width: 15000px;
+    margin-top: 20px;
+    flex: 1;
+  }
+
+  h1 {
+    text-align: center;
+    margin: 30px 0;
   }
 
   .row {
     display: flex;
-    align-items: flex-start;
+    gap: 20px;
   }
 
   .col-md-3 {
-    position: sticky; /* Sidebar stays fixed while scrolling */
+    position: sticky; /* Makes the filter sidebar always visible */
     top: 20px;
-    height: 100%;
+    height: fit-content;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 0 0 25%;
   }
 
   .col-md-9 {
-    padding-left: 15px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 0 0 70%;
   }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  .job-ad-item h3 {
+    margin: 0 0 5px;
+    font-size: 1.25rem;
+  }
+
+  .btn {
+    margin-top: 10px;
+  }
+
+  footer {
+    background-color: gray;
+    padding: 15px 0;
+    text-align: center;
+    margin-top: auto;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  footer p {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  h2 {
+    margin-top: 20px;
+    font-size: 28px;
+    color: #333;
+    text-align: center;
+  }
+
+  .job-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    text-decoration-color: #004085;
+  }
+
+  .card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .job-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+
+  .job-title:hover {
+    text-decoration: underline;
+  }
+
+  .company-name {
+    font-size: 14px;
+    color: #6c757d;
+  }
+
+  .location, .posted-date {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .row {
+    margin: 20px auto;
+    max-width: 1200px;
+  }
+
+  .card {
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 8px;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
 
   nav {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     padding: 5px;
     background-color: lightgray;
-  }
-
-  nav button:hover {
-    transform: scale(1.05);
-  }
-
-  nav a {
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-
-  nav a:hover {
-    transform: scale(1.05);
+    z-index: 1000;
+    position: relative;
   }
 
   nav div {
@@ -59,64 +161,84 @@
     align-items: center;
   }
 
-  h1 {
-    text-align: center;
-    margin: 50px auto;
+  nav .btn {
+    margin: 0 5px;
   }
 
-  hr {
-    width: 60%;
-    margin: 50px auto;
+  nav .btn:hover {
+    scale: 1.05;
   }
 
-  ul {
-    list-style-type: none;
-    width: 30%;
-    margin: 50px auto;
-    padding: 50px;
-    border: 2px solid lightgray;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+  .btn-home {
+    border: none;
+    font-size: x-large;
   }
 
-  ul div {
+  .btn-home:hover {
+    scale: 1.05;
+    border: none;
+    background: none;
+    color: #004085;
+    font-size: x-large;
+  }
+
+  .pagination {
+    margin: 0 auto;
+  }
+
+  .pagination-list {
+    padding: 5px 15px;
+    margin: 0 auto;
     display: flex;
-    justify-content: center;
+    flex-direction: row;
   }
 
-  li {
-    margin: 10px auto;
+  .pagination-list li {
+    padding: 5px 5px;
   }
 
-  a:hover {
-    transform: scale(1.05);
+  .pagination-list a.active {
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border-radius: 5px;
+    padding: 5px 10px;
   }
+
 </style>
 <body>
 <nav>
-  <!--  Logged-in user-->
-  <div sec:authorize="isAuthenticated()">
-    <form th:action="@{/logout}" method="post">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-      <button type="submit" class="btn btn-danger">Logout</button>
-    </form>
-    <a type="button" class="btn btn-secondary"
-       sec:authorize="hasRole('CANDIDATE')" th:href="@{/candidates}">Account</a>
-    <a type="button" class="btn btn-secondary"
-       sec:authorize="hasRole('RECRUITER')" th:href="@{/recruiters}">Account</a>
-  </div>
-  <!-- Not logged-in -->
-  <div sec:authorize="!isAuthenticated()">
-    <a type="button" class="btn btn-success" th:href="@{/login}">Login</a>
-    <a type="button" class="btn btn-primary" th:href="@{/register}">Register</a>
+  <div class="d-flex w-100 align-items-center">
+    <!-- Home Button on the Left -->
+    <div class="me-auto">
+      <a class="btn btn-outline-primary btn-home" th:href="@{/}" role="button">Dream Work</a>
+    </div>
+
+    <!-- Right Side Content -->
+    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+      <form th:action="@{/logout}" method="post" class="me-2">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit" class="btn btn-danger">Logout</button>
+      </form>
+      <a class="btn btn-secondary me-2" sec:authorize="hasRole('CANDIDATE')"
+         th:href="@{/candidates}">Account</a>
+      <a class="btn btn-secondary" sec:authorize="hasRole('RECRUITER')" th:href="@{/recruiters}">Account</a>
+    </div>
+    <div sec:authorize="!isAuthenticated()">
+      <a class="btn btn-success me-2" th:href="@{/login}">Login</a>
+      <a class="btn btn-primary" th:href="@{/register}">Register</a>
+    </div>
   </div>
 </nav>
-<div class="container mt-4">
-  <h1>Jobs</h1>
+
+<div class="container">
+  <h1>Available Jobs</h1>
   <hr>
-  <!--   Filter Sidebar-->
   <div class="row">
+    <!-- Filter Sidebar -->
     <div class="col-md-3">
+      <h6>Total Jobs: <span th:text="${totalJobs}">0</span></h6>
+
       <form action="/job-ads" method="get" class="p-3 border rounded bg-light">
         <h5>Filters</h5>
 
@@ -153,38 +275,96 @@
         <!-- Tech Stack Input -->
         <div class="mb-3">
           <label for="techStack" class="form-label">Tech Stack</label>
-          <input type="text" class="form-control" name="techStack" id="techStack" placeholder="Enter tech stack">
+          <input type="text" class="form-control" name="techStack" id="techStack"
+                 placeholder="Enter tech stack">
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
       </form>
     </div>
-  </div>
 
-  <div>
-    <!-- Iterate over the list of jobs -->
-    <ul th:each="job : ${jobAds}">
-      <li>
-        <h3 th:text="${job.position}">Position</h3>
-      </li>
-      <li>
-        <i>Date: </i><span th:text="${job.date}">Date</span>
-      </li>
-      <li>
-        <i>Company: </i><span th:text="${job.company}">Company</span>
-      </li>
-      <li>
-        <i>City: </i><span th:text="${job.city}">City</span>
-      </li>
-      <li>
-        <div>
-          <a type="button" class="btn btn-primary"
-             th:href="@{/job-ads/{id}(id=${job.id})}">Details</a>
-        </div>
-      </li>
-    </ul>
+    <!-- Job Ads -->
+    <div class="col-md-9">
+      <div th:each="job : ${jobAds}" class="col-12 mb-3">
+        <a target="_blank" th:href="@{/job-ads/{id}(id=${job.id})}" class="job-card">
+          <div class="card">
+            <div class="card-body d-flex align-items-center">
+              <div class="job-details flex-grow-1">
+                <h5 class="job-title" th:text="${job.position}">Job Title</h5>
+                <h6 class="company-name" th:text="${job.company}">Company Name</h6>
+                <p class="location"><i class="bi bi-geo-alt"></i>
+                  <span th:text="${job.city} + ', ' + ${job.country}">City, Country</span>
+                </p>
+                <p class="posted-date">Posted: <span th:text="${job.date}">Date</span></p>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination mt-3">
+        <ul class="pagination-list">
+          <!-- Previous Page -->
+          <li th:if="${currentPage > 0}">
+            <a th:href="@{/job-ads(page=${currentPage - 1})}">Prev</a>
+          </li>
+          <!-- Page Numbers -->
+          <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{/job-ads(page=${i})}" th:text="${(i + 1)}"
+               th:classappend="${i == currentPage} ? 'active' : ''"></a>
+          </li>
+          <!-- Next Page -->
+          <li th:if="${currentPage < totalPages - 1}">
+            <a th:href="@{/job-ads(page=${currentPage + 1})}">Next</a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<footer>
+  <p>&copy; 2024 Dream Work. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+
+  let currentPage = 0;
+  const pageSize = 10;
+
+  function fetchJobs(page) {
+    fetch(`/jobs?page=${page}&size=${pageSize}`)
+    .then(response => response.json())
+    .then(data => {
+      displayJobs(data.content); // data.content get the job ads
+      updatePagination(data.pageable.pageNumber, data.totalPages);
+    });
+  }
+
+  function displayJobs(jobs) {
+    const jobList = document.getElementById('job-list');
+    jobList.innerHTML = '';
+    jobs.forEach(job => {
+      const jobDiv = document.createElement('div');
+      jobDiv.textContent = job.position; //
+      jobList.appendChild(jobDiv);
+    });
+  }
+
+  function updatePagination(current, total) {
+    document.getElementById('page-number').textContent = `Page ${current + 1} / ${total}`;
+  }
+
+  function changePage(direction) {
+    const newPage = currentPage + direction;
+    if (newPage >= 0) {
+      currentPage = newPage;
+      fetchJobs(currentPage);
+    }
+  }
+
+  fetchJobs(currentPage);
+</script>
 </body>
 </html>
