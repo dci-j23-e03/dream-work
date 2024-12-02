@@ -18,7 +18,7 @@ import lombok.Setter;
 @Entity
 public class Recruiter extends User {
 
-  @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnore // To prevent recursion when fetching JobAds that contain Recruiters
   private List<JobAd> jobAds = new ArrayList<>();
 

@@ -1,8 +1,14 @@
 package com.dreamwork.repository;
 
 import com.dreamwork.model.job.JobAd;
+import com.dreamwork.model.user.Recruiter;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface JobAdRepository extends JpaRepository<JobAd, Long> {
@@ -18,4 +24,9 @@ public interface JobAdRepository extends JpaRepository<JobAd, Long> {
 //      @Param("daysAgo") LocalDate daysAgo,
 //      @Param("techStack") String techStack
 //  );
+
+  @Modifying
+  @Transactional
+  @Query("DELETE FROM JobAd j WHERE j.recruiter = :recruiter")
+  void deleteAllByRecruiter(@Param("recruiter") Recruiter recruiter);
 }

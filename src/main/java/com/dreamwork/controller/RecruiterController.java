@@ -3,6 +3,7 @@ package com.dreamwork.controller;
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.exception.JobAdNotFoundException;
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,7 @@ public class RecruiterController {
     this.authenticationService = authenticationService;
   }
 
+
   @GetMapping
   public String getRecruiterDashboard(Model model) {
     User user = authenticationService.getCurrentUser();
@@ -52,11 +55,13 @@ public class RecruiterController {
     return "recruiter-dashboard";
   }
 
+
   @GetMapping("/update")
   public String getUpdateInfo(Model model, Recruiter recruiter) {
     model.addAttribute("recruiter", recruiter);
     return "recruiter-update";
   }
+
 
   @PostMapping("/update")
   public String updateRecruiter(@ModelAttribute Recruiter recruiter,
@@ -66,11 +71,6 @@ public class RecruiterController {
     return "recruiter-update";
   }
 
-  @PostMapping("/delete")
-  public ResponseEntity<Recruiter> deleteRecruiter(@RequestParam String password) {
-    recruiterService.deleteRecruiter(password);
-    return ResponseEntity.noContent().build();
-  }
 
   @GetMapping("/job-ads/create")
   public String getCreateJobAdForm(Model model) {
@@ -79,12 +79,24 @@ public class RecruiterController {
     return "create-job-ad";
   }
 
+
   @PostMapping("/job-ads/create")
   public String createJobAd(JobAd jobAd) {
     jobAdService.createJobAd(jobAd);
 
     return "redirect:/recruiters";
   }
+
+
+  @PostMapping("/job-ads/delete/{id}")
+  public ResponseEntity<Void> deleteJobAd(@PathVariable Long id) {
+    jobAdService.deleteJobAdById(id);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Location", "/recruiters/job-ads");
+    return new ResponseEntity<>(headers, HttpStatus.FOUND); // HTTP 302: Redirect
+  }
+
 
   @GetMapping("/job-ads")
   public String getAllJobAdsForRecruiter(Model model) {
@@ -93,6 +105,7 @@ public class RecruiterController {
 
     return "recruiter-job-ads";
   }
+
 
   @GetMapping("/job-ads/{id}")
   public String getJobAdDetails(@PathVariable Long id, Model model) {
@@ -103,6 +116,7 @@ public class RecruiterController {
     model.addAttribute("candidates", candidates);
     return "/recruiter-job-description";
   }
+
 
   @GetMapping("/job-ads/view-cv/candidate/{candidateId}")
   public ResponseEntity<byte[]> viewCv(@PathVariable Long candidateId) {

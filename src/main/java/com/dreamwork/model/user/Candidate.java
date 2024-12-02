@@ -13,6 +13,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Getter
 @Setter
@@ -21,9 +23,11 @@ import lombok.Setter;
 public class Candidate extends User {
 
   @ManyToMany
-  @JoinTable(name = "applied_jobs", joinColumns = @JoinColumn(name = "candidate_id"),
+  @JoinTable(name = "applied_jobs",
+      joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "job_ad_id"))
   @JsonIgnoreProperties("candidates") // To prevent recursion when fetching JobAds that contain Candidates
+  @Cascade({CascadeType.PERSIST, CascadeType.MERGE}) // Ensure persistence and merging, not deletion
   private List<JobAd> appliedJobAds = new ArrayList<>();
 
   @Lob
