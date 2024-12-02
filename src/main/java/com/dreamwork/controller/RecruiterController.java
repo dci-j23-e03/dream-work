@@ -68,7 +68,7 @@ public class RecruiterController {
       @RequestParam String currentPassword) {
     recruiterService.updateRecruiter(recruiter, currentPassword);
 
-    return "recruiter-update";
+    return "redirect:/recruiters?successUpdate=true";
   }
 
 
@@ -84,7 +84,7 @@ public class RecruiterController {
   public String createJobAd(JobAd jobAd) {
     jobAdService.createJobAd(jobAd);
 
-    return "redirect:/recruiters";
+    return "redirect:/recruiters?successCreate=true";
   }
 
 

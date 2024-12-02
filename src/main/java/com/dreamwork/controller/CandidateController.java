@@ -55,7 +55,7 @@ public class CandidateController {
       @RequestParam String currentPassword) {
     candidateService.updateCandidate(candidate, currentPassword);
 
-    return "candidate-update";
+    return "redirect:/candidates?successUpdate=true";
   }
 
   @GetMapping("/apply/job-ads/{jobAdId}")
@@ -76,7 +76,7 @@ public class CandidateController {
       model.addAttribute("errorMessage", e.getMessage());
       model.addAttribute("jobAdId", jobAdId);
       model.addAttribute("candidate", authenticationService.getCurrentUser());
-      return "candidate-apply";
+      return "redirect:/candidates?successApply=true";
     }
   }
 

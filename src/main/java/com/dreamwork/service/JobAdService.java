@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +38,23 @@ public class JobAdService {
   }
 
   @Transactional(readOnly = true)
+  public Page<JobAdDTO> getJobs(int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    return jobAdRepository.findAll(pageable)
+        .map(jobAd -> new JobAdDTO(
+            jobAd.getJobAdId(),
+            jobAd.getPosition(),
+            jobAd.getDate(),
+            jobAd.getCompany(),
+            jobAd.getCountry(),
+            jobAd.getCity(),
+            jobAd.getSeniority().toString(),
+            jobAd.getMainTechStack(),
+            jobAd.getDescription()
+        ));
+  }
+
+  @Transactional(readOnly = true)
   public List<JobAdDTO> getAllJobAds() {
     List<JobAd> jobAds = jobAdRepository.findAll();
 
@@ -52,6 +72,7 @@ public class JobAdService {
         ))
         .toList();
   }
+
 //  @Transactional(readOnly = true)
 //  public List<JobAdDTO> getAllJobAds(String seniority, String city, String datePosted, String techStack) {
 //    LocalDate daysAgo = null;
@@ -211,4 +232,5 @@ public class JobAdService {
         jobAd.getDescription()
     );
   }
+
 }
