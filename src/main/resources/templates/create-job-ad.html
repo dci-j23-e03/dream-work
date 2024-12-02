@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
   <title>Create Job Ad</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
+      margin: 0 auto;
       padding: 0;
+      min-height: 100vh;
+      width: 100%;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      background-color: ghostwhite;
+
     }
 
     .form-container {
@@ -19,8 +25,11 @@
       border-radius: 8px;
       background-color: white;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      max-width: 500px;
+      max-width: 800px;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     h2 {
@@ -45,7 +54,7 @@
     }
 
     form select {
-      width: 104%;
+      width: 100%;
       padding: 10px;
       margin-bottom: 15px;
       border: 1px solid #ccc;
@@ -57,7 +66,13 @@
       height: 100px;
     }
 
-    button {
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .form-btn {
       width: 50%;
       padding: 10px;
       background-color: #007bff;
@@ -68,48 +83,183 @@
       cursor: pointer;
     }
 
-    button:hover {
+    .form-btn:hover {
       background-color: #0056b3;
     }
+
+    nav {
+      width: 100%;
+      border-bottom: 1px solid #dee2e6;
+      display: flex;
+      justify-content: flex-end;
+      padding: 5px;
+      background-color: lightgray;
+    }
+
+    nav .btn {
+      margin: 0 5px;
+    }
+
+    nav button:hover {
+      transform: scale(1.05);
+    }
+
+    nav a {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    nav a:hover {
+      transform: scale(1.05);
+    }
+
+    nav div {
+      display: flex;
+      align-items: center;
+    }
+
+    nav .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-home {
+      border: none;
+      font-size: x-large;
+    }
+
+    .btn-home:hover {
+      border: none;
+      background: none;
+      color: #004085;
+      font-size: x-large;
+    }
+
+    footer {
+      background-color: gray;
+      padding: 15px 0;
+      text-align: center;
+      margin-top: auto;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .des-textarea {
+      margin-bottom: -2px;
+    }
+
+    .char-count {
+      margin-top: -2px;
+      font-size: 10px;
+      margin-bottom: 20px;
+    }
+
+    footer {
+      background-color: gray;
+      padding: 15px 0;
+      text-align: center;
+      margin-top: auto;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+
   </style>
 </head>
 <body>
+<nav>
+  <div class="d-flex w-100 align-items-center">
+    <!-- Home Button on the Left -->
+    <div class="me-auto">
+      <a class="btn btn-outline-primary btn-home" th:href="@{/}" role="button">Dream Work</a>
+    </div>
+
+    <!-- Right Side Content -->
+    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+      <form th:action="@{/logout}" method="post" class="me-2">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit" class="btn btn-danger">Logout</button>
+      </form>
+      <a class="btn btn-secondary me-2" sec:authorize="hasRole('CANDIDATE')"
+         th:href="@{/candidates}">Account</a>
+      <a class="btn btn-secondary" sec:authorize="hasRole('RECRUITER')" th:href="@{/recruiters}">Account</a>
+    </div>
+    <div sec:authorize="!isAuthenticated()">
+      <a class="btn btn-success me-2" th:href="@{/login}">Login</a>
+      <a class="btn btn-primary" th:href="@{/register}">Register</a>
+    </div>
+  </div>
+</nav>
 <div class="form-container">
-  <h2>Create Job Ad</h2>
+  <h2>Create Job Ad</h2> <hr>
   <form th:action="@{/recruiters/job-ads/create}" method="post" th:object="${jobAd}">
+    <div>
+      <label for="position">Position:</label>
+      <input type="text" id="position" th:field="*{position}" required>
 
-    <label for="position">Position:</label>
-    <input type="text" id="position" th:field="*{position}" required>
+      <label for="date">Date:</label>
+      <input type="date" id="date" th:field="*{date}" required>
 
-    <label for="date">Date:</label>
-    <input type="date" id="date" th:field="*{date}" required>
+      <label for="company">Company:</label>
+      <input type="text" id="company" th:field="*{company}" required>
 
-    <label for="company">Company:</label>
-    <input type="text" id="company" th:field="*{company}" required>
+      <label for="country">Country:</label>
+      <input type="text" id="country" th:field="*{country}" required>
 
-    <label for="country">Country:</label>
-    <input type="text" id="country" th:field="*{country}" required>
+      <label for="city">City:</label>
+      <input type="text" id="city" th:field="*{city}" required>
 
-    <label for="city">City:</label>
-    <input type="text" id="city" th:field="*{city}" required>
+      <label for="seniority">Seniority:</label>
+      <select id="seniority" th:field="*{seniority}" required>
+        <option value="INTERN">INTERN</option>
+        <option value="JUNIOR">JUNIOR</option>
+        <option value="MID_LEVEL">MID_LEVEL</option>
+        <option value="SENIOR">SENIOR</option>
+        <option value="LEAD">LEAD</option>
+      </select>
 
-    <label for="seniority">Seniority:</label>
-    <select id="seniority" th:field="*{seniority}" required>
-      <option value="INTERN">INTERN</option>
-      <option value="JUNIOR">JUNIOR</option>
-      <option value="MID_LEVEL">MID_LEVEL</option>
-      <option value="SENIOR">SENIOR</option>
-      <option value="LEAD">LEAD</option>
-    </select>
+      <label for="mainTechStack">Main Tech Stack:</label>
+      <input type="text" id="mainTechStack" th:field="*{mainTechStack}" required>
 
-    <label for="mainTechStack">Main Tech Stack:</label>
-    <input type="text" id="mainTechStack" th:field="*{mainTechStack}" required>
+      <label for="description">Job Description:</label>
+      <textarea class="des-textarea" id="description" th:field="*{description}" required
+                oninput="updateCounter()"></textarea>
+      <div class="char-count" id="counter">0 / 5000 characters</div>
 
-    <label for="description">Job Description:</label>
-    <textarea id="description" th:field="*{description}" required></textarea>
-
-    <button type="submit">Create Job Ad</button>
+    </div>
+    <button class="form-btn" type="submit">Create Job Ad</button>
   </form>
 </div>
+
+<footer>
+  <p>&copy; 2024 Dream Work. All rights reserved.</p>
+</footer>
+
+<script>
+  const maxChars = 5000;
+  const textarea = document.getElementById('description');
+  const counter = document.getElementById('counter');
+
+  function updateCounter() {
+    let currentLength = textarea.value.length;
+
+    if (currentLength > maxChars) {
+      textarea.value = textarea.value.substring(0, maxChars); // Truncate excess
+      currentLength = maxChars; // Update length after truncation
+    }
+
+    counter.textContent = `${currentLength} / ${maxChars} characters`;
+
+    counter.style.color = currentLength === maxChars ? 'red' : '#555';
+  }
+</script>
 </body>
 </html>
