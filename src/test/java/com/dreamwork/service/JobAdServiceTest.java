@@ -81,6 +81,22 @@ class JobAdServiceTest {
   }
 
   @Test
+  void deleteJobAd_shouldDeleteJobAd_whenJobAdExists() {
+    when(jobAdRepository.findById(1L)).thenReturn(Optional.of(jobAd));
+
+    jobAdService.deleteJobAd(1L);
+
+    verify(jobAdRepository, times(1)).delete(jobAd);
+  }
+
+  @Test
+  void deleteJobAd_shouldThrowException_whenJobAdDoesNotExist() {
+    when(jobAdRepository.findById(1L)).thenReturn(Optional.empty());
+
+    assertThrows(JobAdNotFoundException.class, () -> jobAdService.deleteJobAd(1L));
+  }
+
+  @Test
   void applyToJobAd_shouldApplyToJobAd_whenValidJobAdAndAuthenticatedCandidate() {
     when(jobAdRepository.findById(1L)).thenReturn(Optional.of(jobAd));
     when(authenticationService.getCurrentUser()).thenReturn(candidate);

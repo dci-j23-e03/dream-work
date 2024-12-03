@@ -3,7 +3,6 @@ package com.dreamwork.controller;
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
-import com.dreamwork.exception.JobAdNotFoundException;
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
@@ -20,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -90,7 +88,7 @@ public class RecruiterController {
 
   @PostMapping("/job-ads/delete/{id}")
   public ResponseEntity<Void> deleteJobAd(@PathVariable Long id) {
-    jobAdService.deleteJobAdById(id);
+    jobAdService.deleteJobAd(id);
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Location", "/recruiters/job-ads");

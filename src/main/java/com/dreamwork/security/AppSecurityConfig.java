@@ -40,24 +40,26 @@ public class AppSecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(auth -> auth
-        .requestMatchers("/", "/login", "/register", "/job-ads/**").permitAll()
-        .requestMatchers("/candidates/**").hasRole("CANDIDATE")
-        .requestMatchers("/recruiters/**").hasRole("RECRUITER")
-        .requestMatchers(HttpMethod.DELETE, "/recruiters/job-ads/delete/**").authenticated()
-        .anyRequest().authenticated()
-    ).formLogin(auth -> auth
-        .loginPage("/login")
-        .defaultSuccessUrl("/job-ads", true)
-        .permitAll()
-    ).logout(logout -> logout
-            .logoutUrl("/logout")
-            .logoutSuccessUrl("/login?logout")
-//        .logoutSuccessHandler(customLogoutSuccessHandler())
-            .deleteCookies("JSESSIONID")
-            .invalidateHttpSession(true)
+            .requestMatchers("/", "/login", "/register", "/job-ads/**").permitAll()
+            .requestMatchers("/candidates/**").hasRole("CANDIDATE")
+            .requestMatchers("/recruiters/**").hasRole("RECRUITER")
+            .requestMatchers(HttpMethod.DELETE, "/recruiters/job-ads/delete/**").authenticated()
+            .anyRequest().authenticated()
+        ).formLogin(auth -> auth
+            .loginPage("/login")
+            .defaultSuccessUrl("/job-ads", true)
             .permitAll()
-    )
-.csrf(csrf -> csrf.ignoringRequestMatchers("/recruiters/job-ads/delete/**"));
+        ).logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+//        .logoutSuccessHandler(customLogoutSuccessHandler())
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .permitAll()
+        )
+        .csrf(csrf -> csrf
+            .ignoringRequestMatchers("/recruiters/job-ads/delete/**"));
+
     return http.build();
   }
 

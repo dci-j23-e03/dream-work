@@ -27,7 +27,7 @@ public class Candidate extends User {
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "job_ad_id"))
   @JsonIgnoreProperties("candidates") // To prevent recursion when fetching JobAds that contain Candidates
-  @Cascade({CascadeType.PERSIST, CascadeType.MERGE}) // Ensure persistence and merging, not deletion
+  @Cascade(CascadeType.PERSIST)
   private List<JobAd> appliedJobAds = new ArrayList<>();
 
   @Lob
