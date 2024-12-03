@@ -5,6 +5,7 @@ import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.exception.CvFileSaveException;
 import com.dreamwork.exception.JobAdNotFoundException;
 import com.dreamwork.model.job.JobAd;
+import com.dreamwork.model.job.Seniority;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
 import com.dreamwork.model.user.User;
@@ -95,6 +96,36 @@ public class JobAdService {
 //        ))
 //        .toList();
 //  }
+
+  @Transactional(readOnly = true)
+  public List<JobAdDTO> getFilteredJobAds(Seniority seniority,
+                                          String city,
+//                                          String dateRange,
+                                          String techStack) {
+
+//    LocalDate datePosted = parseDateRange(dateRange);
+
+    List<JobAd> filteredJobAds =
+        jobAdRepository.findJobAdsByFilters(seniority, city, techStack); //, datePosted);
+
+    return filteredJobAds.stream()
+        .map(this::convertToJobAdDTO)
+        .toList();
+  }
+
+  private JobAdDTO convertToJobAdDTO(JobAd jobAd) {
+    return new JobAdDTO(
+        jobAd.getJobAdId(),
+        jobAd.getPosition(),
+        jobAd.getDate(),
+        jobAd.getCompany(),
+        jobAd.getCountry(),
+        jobAd.getCity(),
+        jobAd.getSeniority().toString(),
+        jobAd.getMainTechStack(),
+        jobAd.getDescription()
+    );
+  }
 
 
   @Transactional

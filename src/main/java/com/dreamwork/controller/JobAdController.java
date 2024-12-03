@@ -1,7 +1,9 @@
 package com.dreamwork.controller;
 
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.model.job.Seniority;
 import com.dreamwork.service.JobAdService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -39,17 +41,17 @@ public class JobAdController {
     return "job-ads-list";
   }
 
-  //  @GetMapping("/job-ads-list")
-//  public String getAllJobAds(@RequestParam(required = false) String seniority,
-//                             @RequestParam(required = false) String city,
-//                             @RequestParam(required = false) String datePosted,
-//                             @RequestParam(required = false) String techStack,
-//                             Model model) {
-//    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds(seniority, city, datePosted, techStack);
-//    model.addAttribute("jobAds", jobAdDTOs);
-//
-//    return "index";
-//  }
+  @GetMapping("/filter")
+  public String getFilteredJobAds(
+      @RequestParam(required = false) Seniority seniority,
+      @RequestParam(required = false) String city,
+//      @RequestParam(required = false, defaultValue = "anytime") String datePosted,
+      @RequestParam(required = false) String techStack,
+      Model model) {
+    List<JobAdDTO> filteredJobAds = jobAdService.getFilteredJobAds(seniority, city, techStack); //, datePosted
+    model.addAttribute("jobAds", filteredJobAds);
+    return "job-ads-list";
+  }
 
   @GetMapping("/{jobAdId}")
   public String getJobAdDetails(Model model, @PathVariable Long jobAdId) {
