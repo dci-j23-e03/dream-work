@@ -1,5 +1,6 @@
 package com.dreamwork.controller;
 
+import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.model.job.Seniority;
 import com.dreamwork.service.JobAdService;
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class JobAdController {
 
   private final JobAdService jobAdService;
+  private final AuthenticationService authenticationService;
 
   @Autowired
-  public JobAdController(JobAdService jobAdService) {
+  public JobAdController(JobAdService jobAdService, AuthenticationService authenticationService) {
     this.jobAdService = jobAdService;
+    this.authenticationService = authenticationService;
   }
 
   @GetMapping
@@ -57,7 +60,7 @@ public class JobAdController {
   public String getJobAdDetails(Model model, @PathVariable Long jobAdId) {
     JobAdDTO jobAdDTO = jobAdService.getJobAdById(jobAdId);
     model.addAttribute("job", jobAdDTO);
-
+    model.addAttribute("alreadyApplied", jobAdService.isJobAlreadyApplied(jobAdId));
     return "job-details";
   }
 }

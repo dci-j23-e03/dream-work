@@ -166,6 +166,13 @@
   </div>
 </div>
 
+<div class="text-center">
+  <div th:if="${param.alreadyApplied}" class="alert alert-info" role="alert">
+    <span>You have already applied for this job!</span>
+  </div>
+</div>
+
+
 <div class="dashboard-container">
   <h2>Welcome, <span th:text="${candidate.name} + ' ' + ${candidate.lastname}"></span></h2>
 
