@@ -66,10 +66,16 @@ public class CandidateService {
     if (!passwordEncoder.matches(password, candidate.getPassword())) {
       throw new IncorrectPasswordException("Incorrect password!");
     }
+    if (updatedCandidate.getPassword() != null && !updatedCandidate.getPassword().isEmpty()) {
+      candidate.setPassword(passwordEncoder.encode(updatedCandidate.getPassword()));
+    }
+    if (updatedCandidate.getName() != null && !updatedCandidate.getName().isEmpty()) {
+      candidate.setName(updatedCandidate.getName());
+    }
+    if (updatedCandidate.getLastname() != null && !updatedCandidate.getLastname().isEmpty()) {
+      candidate.setLastname(updatedCandidate.getLastname());
+    }
 
-    candidate.setPassword(passwordEncoder.encode(updatedCandidate.getPassword()));
-    candidate.setName(updatedCandidate.getName());
-    candidate.setLastname(updatedCandidate.getLastname());
     candidateRepository.save(candidate);
   }
 

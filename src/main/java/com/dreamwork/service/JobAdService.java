@@ -224,6 +224,17 @@ public class JobAdService {
         .toList();
   }
 
+  public boolean isJobAlreadyApplied(Long jobAdId) {
+    List<JobAdDTO> appliedJobs = getAllJobAdsForCandidate();
+
+    for (JobAdDTO job : appliedJobs) {
+      if (job.getId().equals(jobAdId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Transactional(readOnly = true)
   public List<JobAdDTO> getAllJobAdsForRecruiter() {
     User user = authenticationService.getCurrentUser();

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
   <meta charset="UTF-8">
   <title>Update Candidate</title>
@@ -165,16 +166,19 @@
     </div>
   </div>
 
-  <form th:action="@{/candidates/update}" method="post" th:object="${candidate}" class="mt-3">
+  <form th:action="@{/candidates/update}" method="post" th:object="${updatedCandidate}"
+        class="mt-3">
 
     <label for="password" class="form-label">New Password:</label>
     <input type="password" id="password" th:field="*{password}" class="form-control"><br>
 
     <label for="name" class="form-label">First Name:</label>
-    <input type="text" id="name" th:field="*{name}" class="form-control"><br>
+    <input type="text" id="name" th:field="*{name}" class="form-control"
+           th:placeholder="${candidate.name}"><br>
 
     <label for="lastname" class="form-label">Last Name:</label>
-    <input type="text" id="lastname" th:field="*{lastname}" class="form-control"><br>
+    <input type="text" id="lastname" th:field="*{lastname}" class="form-control"
+           th:placeholder="${candidate.lastname}"><br>
 
     <label for="currentPassword" class="form-label">Confirm with current password:</label>
     <input type="password" id="currentPassword" name="currentPassword" class="form-control"><br>
@@ -187,6 +191,20 @@
 <footer>
   <p>&copy; 2024 Dream Work. All rights reserved.</p>
 </footer>
+
+<script>
+  document.getElementById('updateForm').addEventListener('submit', function (event) {
+    const inputs = this.querySelectorAll('input');
+
+    inputs.forEach(input => {
+      // Check if the input is empty and has a placeholder
+      if (!input.value && input.placeholder) {
+        // Use the placeholder value as the input value
+        input.value = input.placeholder;
+      }
+    });
+  });
+</script>
 
 </body>
 </html>

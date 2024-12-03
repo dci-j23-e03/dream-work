@@ -45,8 +45,10 @@ public class CandidateController {
   }
 
   @GetMapping("/update")
-  public String getUpdateInfo(Model model, Candidate candidate) {
+  public String getUpdateInfo(Model model, Candidate updatedCandidate) {
+    Candidate candidate = (Candidate) authenticationService.getCurrentUser();
     model.addAttribute("candidate", candidate);
+    model.addAttribute("updatedCandidate", updatedCandidate);
     return "candidate-update";
   }
 
@@ -60,6 +62,7 @@ public class CandidateController {
 
   @GetMapping("/apply/job-ads/{jobAdId}")
   public String getApplyToJobForm(Model model, @PathVariable Long jobAdId) {
+
     model.addAttribute("jobAdId", jobAdId);
     model.addAttribute("candidate", authenticationService.getCurrentUser());
 
@@ -69,14 +72,21 @@ public class CandidateController {
   @PostMapping("/apply/job-ads/{jobAdId}")
   public String applyToJob(Model model, @PathVariable Long jobAdId,
       @RequestParam MultipartFile cvFile) {
+
+    // already applied to this job
+    if (jobAdService.isJobAlreadyApplied(jobAdId)) {
+      model.addAttribute("jobAdId", jobAdId);
+      model.addAttribute("candidate", authenticationService.getCurrentUser());
+      return "redirect:/job-ads/{jobAdId}?alreadyApplied=true";
+    }
     try {
       jobAdService.applyToJob(jobAdId, cvFile);
-      return "redirect:/candidates";
+      return "redirect:/candidates?successApply=true";
     } catch (JobAdNotFoundException | CvFileSaveException e) {
       model.addAttribute("errorMessage", e.getMessage());
       model.addAttribute("jobAdId", jobAdId);
       model.addAttribute("candidate", authenticationService.getCurrentUser());
-      return "redirect:/candidates?successApply=true";
+      return "candidate-apply";
     }
   }
 

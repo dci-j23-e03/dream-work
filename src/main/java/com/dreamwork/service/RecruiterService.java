@@ -60,10 +60,16 @@ public class RecruiterService {
     if (!passwordEncoder.matches(password, recruiter.getPassword())) {
       throw new IncorrectPasswordException("Incorrect password!");
     }
+    if (updatedRecruiter.getPassword() != null && !updatedRecruiter.getPassword().isEmpty()) {
+      recruiter.setPassword(passwordEncoder.encode(updatedRecruiter.getPassword()));
+    }
+    if (updatedRecruiter.getName() != null && !updatedRecruiter.getName().isEmpty()) {
+      recruiter.setName(updatedRecruiter.getName());
+    }
+    if (updatedRecruiter.getLastname() != null && !updatedRecruiter.getLastname().isEmpty()) {
+      recruiter.setLastname(updatedRecruiter.getLastname());
+    }
 
-    recruiter.setPassword(passwordEncoder.encode(updatedRecruiter.getPassword()));
-    recruiter.setName(updatedRecruiter.getName());
-    recruiter.setLastname(updatedRecruiter.getLastname());
     recruiterRepository.save(recruiter);
   }
 

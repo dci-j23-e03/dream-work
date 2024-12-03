@@ -136,7 +136,7 @@
     <ul>
       <li th:each="candidate : ${candidates}">
         <span th:text="${candidate.name} + ' ' + ${candidate.lastname}">Applicant Name</span> -
-        <a href="mailto:applicant@example.com">applicant@example.com</a>
+        <a th:href="mailto + ':' + ${candidate.email}" th:text="${candidate.email}">applicant@example.com</a>
         <a target="_blank" th:href="@{/recruiters/job-ads/view-cv/candidate/{id}(id=${candidate.id})}"> | View CV</a>
           <!--        button for viewing cv-->
       </li>
@@ -153,7 +153,7 @@
   <form id="deleteJobAdForm" th:action="@{/recruiters/job-ads/delete/{id}(id=${jobAd.id})}" method="POST">
     <input type="hidden" name="_method" value="DELETE">
     <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-    <button type="submit">Delete Job Ad</button>
+    <button class="btn btn-danger" type="submit">Delete Job Ad</button>
   </form>
 </div>
 <footer>
