@@ -2,7 +2,6 @@ package com.dreamwork.controller;
 
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.service.JobAdService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -22,23 +21,6 @@ public class JobAdController {
   public JobAdController(JobAdService jobAdService) {
     this.jobAdService = jobAdService;
   }
-
-  //figure out how to get the job ads to display on the landing page
-
-//  @GetMapping("/")
-//  public String landingPage(Model model) {
-//    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds();
-//    model.addAttribute("jobAds", jobAdDTOs);
-//    return "job-ads-list";
-//  }
-
-//  @GetMapping("/job-ads-list")
-//  public String getAllJobAds(Model model) {
-//    List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAds();
-//    model.addAttribute("jobAds", jobAdDTOs);
-//
-//    return "job-ads-list";
-//  }
 
   @GetMapping
   public String listJobs(
@@ -76,5 +58,4 @@ public class JobAdController {
 
     return "job-details";
   }
-
 }

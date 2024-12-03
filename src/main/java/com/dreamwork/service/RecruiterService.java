@@ -76,7 +76,7 @@ public class RecruiterService {
       throw new IncorrectPasswordException("Incorrect password!");
     }
 
-    jobAdRepository.deleteAllByRecruiter(recruiter);
+    jobAdRepository.deleteAllJobAdsFromRecruiter(recruiter);
     recruiterRepository.deleteById(recruiter.getUserId());
 
     return true;

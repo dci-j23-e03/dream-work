@@ -118,7 +118,7 @@ class CandidateServiceTest {
   }
 
   @Test
-  void deleteCandidate_shouldDelete_whenPasswordMatches() {
+  void deleteCandidate_shouldDeleteCandidate_whenPasswordMatches() {
     when(authenticationService.getCurrentUser()).thenReturn(candidate);
     when(passwordEncoder.matches("password", candidate.getPassword()))
         .thenReturn(true);

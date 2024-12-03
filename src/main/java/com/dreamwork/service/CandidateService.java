@@ -76,12 +76,14 @@ public class CandidateService {
   @Transactional
   public boolean deleteCandidate(String deletePassword) {
     User user = authenticationService.getCurrentUser();
-
     Candidate candidate = (Candidate) user;
+
     if (!passwordEncoder.matches(deletePassword, candidate.getPassword())) {
       throw new IncorrectPasswordException("Incorrect password!");
     }
+
     candidateRepository.deleteById(candidate.getUserId());
+
     return true;
   }
 

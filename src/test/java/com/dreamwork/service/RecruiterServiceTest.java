@@ -2,6 +2,7 @@ package com.dreamwork.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -12,6 +13,7 @@ import com.dreamwork.dto.UserDTO;
 import com.dreamwork.exception.IncorrectPasswordException;
 import com.dreamwork.exception.UserAlreadyExistsException;
 import com.dreamwork.model.user.Recruiter;
+import com.dreamwork.repository.JobAdRepository;
 import com.dreamwork.repository.RecruiterRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,9 @@ class RecruiterServiceTest {
   private RecruiterRepository recruiterRepository;
 
   @Mock
+  private JobAdRepository jobAdRepository;
+
+  @Mock
   private PasswordEncoder passwordEncoder;
 
   @Mock
@@ -46,7 +51,7 @@ class RecruiterServiceTest {
   @BeforeEach
   void setUp() {
     recruiterService = new RecruiterService(
-        recruiterRepository, passwordEncoder, authenticationService);
+        recruiterRepository, jobAdRepository, passwordEncoder, authenticationService);
 
     user = new UserDTO("testUser", "password",
         "John", "Doe", "john.doe@example.com");
@@ -108,5 +113,27 @@ class RecruiterServiceTest {
 
     assertThrows(IncorrectPasswordException.class, () ->
         recruiterService.updateRecruiter(updatedRecruiter, "password"));
+  }
+
+  @Test
+  void deleteRecruiter_shouldDeleteRecruiter_whenPasswordMatches() {
+    when(authenticationService.getCurrentUser()).thenReturn(recruiter);
+    when(passwordEncoder.matches("password", recruiter.getPassword()))
+        .thenReturn(true);
+
+    boolean result = recruiterService.deleteRecruiter("password");
+
+    assertTrue(result);
+    verify(recruiterRepository, times(1)).deleteById(recruiter.getUserId());
+  }
+
+  @Test
+  void deleteRecruiter_shouldThrowException_whenPasswordDoesNotMatch() {
+    when(authenticationService.getCurrentUser()).thenReturn(recruiter);
+    when(passwordEncoder.matches("password", recruiter.getPassword()))
+        .thenReturn(false);
+
+    assertThrows(IncorrectPasswordException.class, () ->
+        recruiterService.deleteRecruiter("password"));
   }
 }
