@@ -22,6 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Service class for managing job ad operations. This class provides methods for CRUD operations,
+ * filtering and managing candidate applications related to job ads.
+ */
 @Service
 public class JobAdService {
 
@@ -29,6 +33,13 @@ public class JobAdService {
   private final CandidateRepository candidateRepository;
   private final AuthenticationService authenticationService;
 
+  /**
+   * constructor for dependencies
+   *
+   * @param jobAdRepository       Repository for managing JobAd entities
+   * @param candidateRepository   Repository for managing Candidate entities
+   * @param authenticationService Service for managing authentication
+   */
   @Autowired
   public JobAdService(JobAdRepository jobAdRepository, CandidateRepository candidateRepository,
       AuthenticationService authenticationService) {
@@ -37,6 +48,13 @@ public class JobAdService {
     this.authenticationService = authenticationService;
   }
 
+  /**
+   * Retrieves a paginated list of job ads
+   *
+   * @param page the page number the retrieve
+   * @param size the number of items per page
+   * @return a page of JobAdDTO with job ads
+   */
   @Transactional(readOnly = true)
   public Page<JobAdDTO> getJobs(int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
@@ -54,6 +72,11 @@ public class JobAdService {
         ));
   }
 
+  /**
+   * Retrieves all job advertisements.
+   *
+   * @return A list of JobAdDTO with all job ads.
+   */
   @Transactional(readOnly = true)
   public List<JobAdDTO> getAllJobAds() {
     List<JobAd> jobAds = jobAdRepository.findAll();
@@ -97,11 +120,28 @@ public class JobAdService {
 //        .toList();
 //  }
 
+  /**
+   * Retrieves a paginated list of job ads filtered by the specified criteria.
+   *
+   * This method filters job ads based on seniority, city, main technology stack, and date.
+   * The results are returned as a `Page` of `JobAdDTO` objects.
+   *
+   * The method is annotated with `@Transactional(readOnly = true)`, indicating it performs
+   * read-only database operations.
+   *
+   * @param seniority      the seniority level to filter by (e.g., JUNIOR, MID, SENIOR)
+   * @param city           the city to filter by; may be null if not filtering by city
+   * @param mainTechStack  the main technology stack to filter by; may be null if not filtering by technology
+   * @param date           the date to filter by; may be null if not filtering by date
+   * @param page           the page number (0-based) for pagination
+   * @param size           the size of the page (number of results per page)
+   * @return a Page of JobAdDTO objects that match the specified filters
+   */
   @Transactional(readOnly = true)
   public List<JobAdDTO> getFilteredJobAds(Seniority seniority,
-                                          String city,
+      String city,
 //                                          String dateRange,
-                                          String techStack) {
+      String techStack) {
 
 //    LocalDate datePosted = parseDateRange(dateRange);
 
@@ -113,6 +153,12 @@ public class JobAdService {
         .toList();
   }
 
+  /**
+   * Converts the job ad to JobAdDTO
+   *
+   * @param jobAd the Job Ad to convert
+   * @return a JobAdDTO representing the job ad.
+   */
   private JobAdDTO convertToJobAdDTO(JobAd jobAd) {
     return new JobAdDTO(
         jobAd.getJobAdId(),
@@ -127,7 +173,11 @@ public class JobAdService {
     );
   }
 
-
+  /**
+   * Creates a new job ad and associates it with the current recruiter.
+   *
+   * @param jobAd The JobAd entity to create.
+   */
   @Transactional
   public void createJobAd(JobAd jobAd) {
     User user = authenticationService.getCurrentUser();
@@ -140,7 +190,12 @@ public class JobAdService {
     jobAdRepository.save(jobAd);
   }
 
-
+  /**
+   * Deletes a job ad by ID, removes associations between job ad and candidates
+   *
+   * @param jobAdId The ID of the job ad to delete.
+   * @throws JobAdNotFoundException if the job ad does not exist.
+   */
   @Transactional
   public void deleteJobAd(Long jobAdId) {
     Optional<JobAd> jobAdOpt = jobAdRepository.findById(jobAdId);
@@ -161,7 +216,14 @@ public class JobAdService {
     jobAdRepository.delete(jobAd);
   }
 
-
+  /**
+   * This method allows to apply for a job ad with cv
+   *
+   * @param jobAdId ID of the JobAd to apply.
+   * @param cvFile the CV file of Candidate
+   * @throws JobAdNotFoundException if job ad is not found
+   * @throws CvFileSaveException if cv file is bigger than 10 mb or in another content type
+   */
   @Transactional
   public void applyToJob(Long jobAdId, MultipartFile cvFile) {
     Optional<JobAd> jobAdOpt = jobAdRepository.findById(jobAdId);
@@ -202,6 +264,11 @@ public class JobAdService {
     candidateRepository.save(candidate);
   }
 
+  /**
+   * Retrieves all job ads the current candidate has applied for.
+   *
+   * @return A list of JobAdDTO with the candidate's applied job ads.
+   */
   @Transactional(readOnly = true)
   public List<JobAdDTO> getAllJobAdsForCandidate() {
     User user = authenticationService.getCurrentUser();
@@ -224,6 +291,12 @@ public class JobAdService {
         .toList();
   }
 
+  /**
+   * this method checks if a candidate has already applied for a specific job ad
+   *
+   * @param jobAdId ID of the job ad to check
+   * @return true if the candidate has already applied
+   */
   public boolean isJobAlreadyApplied(Long jobAdId) {
     List<JobAdDTO> appliedJobs = getAllJobAdsForCandidate();
 
@@ -235,6 +308,11 @@ public class JobAdService {
     return false;
   }
 
+  /**
+   * Retrieves all job ads created by the current recruiter.
+   *
+   * @return A list of JobAdDTO with the recruiter's job ads.
+   */
   @Transactional(readOnly = true)
   public List<JobAdDTO> getAllJobAdsForRecruiter() {
     User user = authenticationService.getCurrentUser();
@@ -257,6 +335,13 @@ public class JobAdService {
         .toList();
   }
 
+  /**
+   * Retrieves a specific job ad by its ID.
+   *
+   * @param jobAdId The ID of the job ad.
+   * @return A JobAdDTO with the job ad details.
+   * @throws JobAdNotFoundException if the job ad is not found.
+   */
   @Transactional(readOnly = true)
   public JobAdDTO getJobAdById(Long jobAdId) {
     Optional<JobAd> jobAdOpt = jobAdRepository.findById(jobAdId);

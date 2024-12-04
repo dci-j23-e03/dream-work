@@ -14,12 +14,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+/**
+ * Service for handling authentication-related tasks such as retrieving
+ * the current authenticated user and logging out the user.
+ *
+ * This service retrieves user details based on the username
+ * of the authenticated user and manages user context.
+ */
 @Service
 public class AuthenticationService {
 
   private final CandidateRepository candidateRepository;
   private final RecruiterRepository recruiterRepository;
 
+  /**
+   * Constructor with the specified repositories for managing candidates and recruiters.
+   *
+   * @param candidateRepository the repository for accessing candidate data.
+   * @param recruiterRepository the repository for accessing recruiter data.
+   */
   @Autowired
   public AuthenticationService(CandidateRepository candidateRepository,
       RecruiterRepository recruiterRepository) {
@@ -27,6 +40,13 @@ public class AuthenticationService {
     this.recruiterRepository = recruiterRepository;
   }
 
+  /**
+   * Retrieves the current authenticated user (Candidate or Recruiter) based on the username
+   * stored in the security context.
+   *
+   * @return the User object representing the currently authenticated user.
+   * @throws UsernameNotFoundException if no user with the current username is found in the repositories.
+   */
   public User getCurrentUser() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -42,6 +62,11 @@ public class AuthenticationService {
     }
   }
 
+  /**
+   * Logs out the current user by clearing the security context and invalidating the HTTP session.
+   * This method ensures that the user's authentication details are removed from the context
+   * and that their session is properly invalidated to prevent any further access without re-authentication.
+   */
   public void logout() {
     SecurityContextHolder.clearContext();
     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
