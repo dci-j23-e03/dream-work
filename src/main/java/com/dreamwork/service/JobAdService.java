@@ -2,6 +2,7 @@ package com.dreamwork.service;
 
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.exception.AlreadyAppliedException;
 import com.dreamwork.exception.CvFileSaveException;
 import com.dreamwork.exception.JobAdNotFoundException;
 import com.dreamwork.model.job.JobAd;
@@ -12,6 +13,8 @@ import com.dreamwork.model.user.User;
 import com.dreamwork.repository.CandidateRepository;
 import com.dreamwork.repository.JobAdRepository;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +59,9 @@ public class JobAdService {
    * @return a page of JobAdDTO with job ads
    */
   @Transactional(readOnly = true)
-  public Page<JobAdDTO> getJobs(int page, int size) {
+  public Page<JobAdDTO> getAllJobAds(int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
+
     return jobAdRepository.findAll(pageable)
         .map(jobAd -> new JobAdDTO(
             jobAd.getJobAdId(),
@@ -78,10 +82,21 @@ public class JobAdService {
    * @return A list of JobAdDTO with all job ads.
    */
   @Transactional(readOnly = true)
-  public List<JobAdDTO> getAllJobAds() {
-    List<JobAd> jobAds = jobAdRepository.findAll();
+  public Page<JobAdDTO> getFilteredJobAds(Seniority seniority, String city, String mainTechStack,
+      LocalDate date, int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
 
-    return jobAds.stream()
+    String dateString;
+    if (date != null) {
+      dateString = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    } else {
+      dateString = null;
+    }
+
+    Page<JobAd> jobAds = jobAdRepository
+        .findAllJobAdsByFiltering(seniority, city, mainTechStack, dateString, pageable);
+
+    return jobAds
         .map(jobAd -> new JobAdDTO(
             jobAd.getJobAdId(),
             jobAd.getPosition(),
@@ -92,86 +107,9 @@ public class JobAdService {
             jobAd.getSeniority().toString(),
             jobAd.getMainTechStack(),
             jobAd.getDescription()
-        ))
-        .toList();
+        ));
   }
 
-//  @Transactional(readOnly = true)
-//  public List<JobAdDTO> getAllJobAds(String seniority, String city, String datePosted, String techStack) {
-//    LocalDate daysAgo = null;
-//    if (datePosted != null) {
-//      daysAgo = LocalDate.parse(datePosted);
-//    }
-//
-//    List<JobAd> filteredJobAds = jobAdRepository.findJobAdsByFilters(seniority, city, daysAgo, techStack);
-//
-//    return filteredJobAds.stream()
-//        .map(jobAd -> new JobAdDTO(
-//              jobAd.getJobAdId(),
-//            jobAd.getPosition(),
-//            jobAd.getDate(),
-//            jobAd.getCompany(),
-//            jobAd.getCountry(),
-//            jobAd.getCity(),
-//            jobAd.getSeniority().toString(),
-//            jobAd.getMainTechStack(),
-//            jobAd.getDescription()
-//        ))
-//        .toList();
-//  }
-
-  /**
-   * Retrieves a paginated list of job ads filtered by the specified criteria.
-   *
-   * This method filters job ads based on seniority, city, main technology stack, and date.
-   * The results are returned as a `Page` of `JobAdDTO` objects.
-   *
-   * The method is annotated with `@Transactional(readOnly = true)`, indicating it performs
-   * read-only database operations.
-   *
-   * @param seniority      the seniority level to filter by (e.g., JUNIOR, MID, SENIOR)
-   * @param city           the city to filter by; may be null if not filtering by city
-   * @param mainTechStack  the main technology stack to filter by; may be null if not filtering by technology
-   * @param date           the date to filter by; may be null if not filtering by date
-   * @param page           the page number (0-based) for pagination
-   * @param size           the size of the page (number of results per page)
-   * @return a Page of JobAdDTO objects that match the specified filters
-   */
-  @Transactional(readOnly = true)
-  public List<JobAdDTO> getFilteredJobAds(Seniority seniority,
-      String city,
-//                                          String dateRange,
-      String techStack) {
-
-//    LocalDate datePosted = parseDateRange(dateRange);
-
-    List<JobAd> filteredJobAds =
-        jobAdRepository.findJobAdsByFilters(seniority, city, techStack); //, datePosted);
-
-    return filteredJobAds.stream()
-        .map(this::convertToJobAdDTO)
-        .toList();
-  }
-
-  /**
-   * Converts the job ad to JobAdDTO
-   *
-   * @param jobAd the Job Ad to convert
-   * @return a JobAdDTO representing the job ad.
-   */
-  private JobAdDTO convertToJobAdDTO(JobAd jobAd) {
-    return new JobAdDTO(
-        jobAd.getJobAdId(),
-        jobAd.getPosition(),
-        jobAd.getDate(),
-        jobAd.getCompany(),
-        jobAd.getCountry(),
-        jobAd.getCity(),
-        jobAd.getSeniority().toString(),
-        jobAd.getMainTechStack(),
-        jobAd.getDescription()
-    );
-  }
 
   /**
    * Creates a new job ad and associates it with the current recruiter.
@@ -234,6 +172,12 @@ public class JobAdService {
       throw new JobAdNotFoundException("Job Ad does not exist!");
     }
 
+    JobAd jobAd = jobAdOpt.get();
+
+    if (jobAd.getCandidates().contains(candidate)) {
+      throw new AlreadyAppliedException("You have already applied to this job!");
+    }
+
     if (!"application/pdf".equals(cvFile.getContentType())) {
       throw new CvFileSaveException("Application document must be in .pdf format!");
     }
@@ -241,8 +185,6 @@ public class JobAdService {
     if (cvFile.getSize() > 10 * 1024 * 1024) {
       throw new CvFileSaveException("File size must not exceed 10MB!");
     }
-
-    JobAd jobAd = jobAdOpt.get();
 
     try {
       candidate.setCvFile(null);
@@ -291,21 +233,15 @@ public class JobAdService {
         .toList();
   }
 
-  /**
-   * this method checks if a candidate has already applied for a specific job ad
-   *
-   * @param jobAdId ID of the job ad to check
-   * @return true if the candidate has already applied
-   */
-  public boolean isJobAlreadyApplied(Long jobAdId) {
-    List<JobAdDTO> appliedJobs = getAllJobAdsForCandidate();
+  @Transactional(readOnly = true)
+  public boolean hasCandidateAlreadyApplied(Long jobAdId) {
+    JobAd jobAd = jobAdRepository.findById(jobAdId)
+        .orElseThrow(() -> new JobAdNotFoundException("Job Ad does not exist!"));
 
-    for (JobAdDTO job : appliedJobs) {
-      if (job.getId().equals(jobAdId)) {
-        return true;
-      }
-    }
-    return false;
+    User user = authenticationService.getCurrentUser();
+    Candidate candidate = (Candidate) user;
+
+    return jobAd.getCandidates().contains(candidate);
   }
 
   /**

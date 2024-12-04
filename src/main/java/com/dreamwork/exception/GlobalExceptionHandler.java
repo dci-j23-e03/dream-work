@@ -42,8 +42,8 @@ public class GlobalExceptionHandler {
         e.getMessage());
   }
 
-  @ExceptionHandler(value = InvalidEnumException.class)
-  public @ResponseBody ErrorResponse handleInvalidEnumException(InvalidEnumException e) {
+  @ExceptionHandler(value = AlreadyAppliedException.class)
+  public @ResponseBody ErrorResponse handleAlreadyAppliedException(AlreadyAppliedException e) {
     return new ErrorResponse(
         HttpStatus.BAD_REQUEST.value(),
         HttpStatus.BAD_REQUEST.getReasonPhrase(),

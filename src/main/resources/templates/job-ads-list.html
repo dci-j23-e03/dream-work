@@ -234,12 +234,23 @@
 <div class="container">
   <h1>Available Jobs</h1>
   <hr>
+
+  <div class="text-center">
+    <div th:if="${param.success}" class="alert alert-success" role="alert">
+      <span>Account deleted successfully.</span>
+    </div>
+
+    <div th:if="${param.logout}" class="alert alert-success" role="alert">
+      <span>Logged out successfully.</span>
+    </div>
+  </div>
+
   <div class="row">
     <!-- Filter Sidebar -->
     <div class="col-md-3">
       <h6>Total Jobs: <span th:text="${totalJobs}">0</span></h6>
 
-      <form action="/job-ads" method="get" class="p-3 border rounded bg-light">
+      <form th:action="@{/job-ads/filter}" method="get" class="p-3 border rounded bg-light">
         <h5>Filters</h5>
 
         <!-- Seniority Dropdown -->
@@ -247,10 +258,11 @@
           <label for="seniority" class="form-label">Seniority</label>
           <select class="form-select" name="seniority" id="seniority">
             <option value="">Select Seniority</option>
-            <option value="Junior">Junior</option>
-            <option value="Mid">Mid</option>
-            <option value="Senior">Senior</option>
-            <option value="Lead">Lead</option>
+            <option value="INTERN">INTERN</option>
+            <option value="JUNIOR">JUNIOR</option>
+            <option value="MID">MID</option>
+            <option value="SENIOR">SENIOR</option>
+            <option value="LEAD">LEAD</option>
           </select>
         </div>
 
@@ -260,22 +272,16 @@
           <input type="text" class="form-control" name="city" id="city" placeholder="Enter city">
         </div>
 
-<!--        &lt;!&ndash; Date Posted Options &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--          <label for="datePosted" class="form-label">Date Posted</label>-->
-<!--          <select class="form-select" name="datePosted" id="datePosted">-->
-<!--            <option value="">Select Date Range</option>-->
-<!--            <option value="1">Past 24 Hours</option>-->
-<!--            <option value="3">Past 3 Days</option>-->
-<!--            <option value="7">Past Week</option>-->
-<!--            <option value="30">Past Month</option>-->
-<!--          </select>-->
-<!--        </div>-->
+        <!-- Date Posted Options -->
+        <div class="mb-3">
+          <label for="date" class="form-label">Date Posted</label>
+          <input type="date" class="form-select" name="date" id="date">
+        </div>
 
         <!-- Tech Stack Input -->
         <div class="mb-3">
-          <label for="techStack" class="form-label">Tech Stack</label>
-          <input type="text" class="form-control" name="techStack" id="techStack"
+          <label for="mainTechStack" class="form-label">Tech Stack</label>
+          <input type="text" class="form-control" name="mainTechStack" id="mainTechStack"
                  placeholder="Enter tech stack">
         </div>
 

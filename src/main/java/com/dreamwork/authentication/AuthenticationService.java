@@ -6,10 +6,12 @@ import com.dreamwork.model.user.User;
 import com.dreamwork.repository.CandidateRepository;
 import com.dreamwork.repository.RecruiterRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -69,9 +71,17 @@ public class AuthenticationService {
    */
   public void logout() {
     SecurityContextHolder.clearContext();
-    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-        .getRequestAttributes())
-        .getRequest();
-    request.getSession().invalidate();
+
+    ServletRequestAttributes attributes =
+        (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+    if (attributes != null) {
+      HttpServletRequest request = attributes.getRequest();
+      HttpServletResponse response = attributes.getResponse();
+
+      if (response != null) {
+        new SecurityContextLogoutHandler().logout(request, response, null);
+      }
+    }
   }
 }

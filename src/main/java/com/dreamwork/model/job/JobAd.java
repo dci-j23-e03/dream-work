@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class JobAd {
   private String position;
 
   @Column(nullable = false)
-  private String date;
+  private LocalDate date;
 
   @Column(nullable = false)
   private String company;

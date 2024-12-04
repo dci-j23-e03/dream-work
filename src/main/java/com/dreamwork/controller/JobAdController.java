@@ -1,10 +1,9 @@
 package com.dreamwork.controller;
 
-import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.model.job.Seniority;
 import com.dreamwork.service.JobAdService;
-import java.util.List;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class JobAdController {
 
   private final JobAdService jobAdService;
-  private final AuthenticationService authenticationService;
 
   /**
    * Constructor  with required services.
@@ -32,9 +30,8 @@ public class JobAdController {
    * @param authenticationService Service for managing authentication and current user context.
    */
   @Autowired
-  public JobAdController(JobAdService jobAdService, AuthenticationService authenticationService) {
+  public JobAdController(JobAdService jobAdService) {
     this.jobAdService = jobAdService;
-    this.authenticationService = authenticationService;
   }
 
   /**
@@ -46,11 +43,11 @@ public class JobAdController {
    * @return View name for the list of job advertisements.
    */
   @GetMapping
-  public String listJobs(
+  public String getAllJobAds(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
       Model model) {
-    Page<JobAdDTO> jobPage = jobAdService.getJobs(page, size);
+    Page<JobAdDTO> jobPage = jobAdService.getAllJobAds(page, size);
 
     long totalJobs = jobPage.getTotalElements();
 
@@ -78,11 +75,21 @@ public class JobAdController {
   public String getFilteredJobAds(
       @RequestParam(required = false) Seniority seniority,
       @RequestParam(required = false) String city,
-//      @RequestParam(required = false, defaultValue = "anytime") String datePosted,
-      @RequestParam(required = false) String techStack,
+      @RequestParam(required = false) String mainTechStack,
+      @RequestParam(required = false, defaultValue = "1900-01-01") LocalDate date,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
       Model model) {
-    List<JobAdDTO> filteredJobAds = jobAdService.getFilteredJobAds(seniority, city, techStack); //, datePosted
-    model.addAttribute("jobAds", filteredJobAds);
+    Page<JobAdDTO> jobPage = jobAdService.getFilteredJobAds(
+        seniority, city, mainTechStack, date, page, size);
+
+    long totalJobs = jobPage.getTotalElements();
+
+    model.addAttribute("jobAds", jobPage.getContent());
+    model.addAttribute("currentPage", page);
+    model.addAttribute("totalPages", jobPage.getTotalPages());
+    model.addAttribute("totalJobs", totalJobs);
+
     return "job-ads-list";
   }
 
@@ -97,7 +104,8 @@ public class JobAdController {
   public String getJobAdDetails(Model model, @PathVariable Long jobAdId) {
     JobAdDTO jobAdDTO = jobAdService.getJobAdById(jobAdId);
     model.addAttribute("job", jobAdDTO);
-    model.addAttribute("alreadyApplied", jobAdService.isJobAlreadyApplied(jobAdId));
+//    model.addAttribute(
+//        "alreadyApplied", jobAdService.hasCandidateAlreadyApplied(jobAdId));
     return "job-details";
   }
 }

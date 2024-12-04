@@ -1,5 +1,6 @@
 package com.dreamwork.dto;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,7 @@ public class JobAdDTO {
 
   private Long id;
   private String position;
-  private String date;
+  private LocalDate date;
   private String company;
   private String country;
   private String city;
