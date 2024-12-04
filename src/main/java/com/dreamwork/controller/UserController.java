@@ -2,6 +2,7 @@ package com.dreamwork.controller;
 
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.UserDTO;
+import com.dreamwork.exception.IncorrectPasswordException;
 import com.dreamwork.model.job.Role;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller for handling user-related actions such as registration, login,
@@ -106,27 +106,22 @@ public class UserController {
    * @return a redirect to the job ads page if successful, or the delete account page on failure.
    */
   @PostMapping("/delete-account")
-  public String deleteAccount(@RequestParam String password, Model model,
-      RedirectAttributes redirectAttributes) {
-
+  public String deleteAccount(@RequestParam String password) {
     User currentUser = authenticationService.getCurrentUser();
-    boolean isDeleted = false;
 
-    if (currentUser instanceof Candidate) {
-      isDeleted = candidateService.deleteCandidate(password);
-    } else if (currentUser instanceof Recruiter) {
-      isDeleted = recruiterService.deleteRecruiter(password);
-    }
+    try {
+      if (currentUser instanceof Candidate) {
+        candidateService.deleteCandidate(password);
+      } else if (currentUser instanceof Recruiter) {
+        recruiterService.deleteRecruiter(password);
+      }
 
-    if (isDeleted) {
       authenticationService.logout();
-      redirectAttributes.addFlashAttribute(
-          "successMessage", "Account successfully deleted.");
+
       return "redirect:/job-ads?success";
-    } else {
-      model.addAttribute(
-          "errorMessage", "Failed to delete account. Please try again.");
-      return "delete-account";
+
+    } catch (IncorrectPasswordException e) {
+      return "redirect:/delete-account?error";
     }
   }
 }

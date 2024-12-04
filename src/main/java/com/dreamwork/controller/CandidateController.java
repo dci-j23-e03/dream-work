@@ -3,6 +3,7 @@ package com.dreamwork.controller;
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
 import com.dreamwork.exception.CvFileSaveException;
+import com.dreamwork.exception.IncorrectPasswordException;
 import com.dreamwork.exception.JobAdNotFoundException;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.User;
@@ -86,9 +87,13 @@ public class CandidateController {
   @PostMapping("/update")
   public String updateCandidate(@ModelAttribute Candidate candidate,
       @RequestParam String currentPassword) {
-    candidateService.updateCandidate(candidate, currentPassword);
+    try {
+      candidateService.updateCandidate(candidate, currentPassword);
+    } catch (IncorrectPasswordException e) {
+      return "redirect:/candidates/update?error";
+    }
 
-    return "redirect:/candidates?successUpdate=true";
+    return "redirect:/candidates?update";
   }
 
   /**
@@ -118,16 +123,9 @@ public class CandidateController {
   @PostMapping("/apply/job-ads/{jobAdId}")
   public String applyToJob(Model model, @PathVariable Long jobAdId,
       @RequestParam MultipartFile cvFile) {
-
-    // already applied to this job
-    if (jobAdService.isJobAlreadyApplied(jobAdId)) {
-      model.addAttribute("jobAdId", jobAdId);
-      model.addAttribute("candidate", authenticationService.getCurrentUser());
-      return "redirect:/job-ads/{jobAdId}?alreadyApplied=true";
-    }
     try {
       jobAdService.applyToJob(jobAdId, cvFile);
-      return "redirect:/candidates?successApply=true";
+      return "redirect:/candidates?apply";
     } catch (JobAdNotFoundException | CvFileSaveException e) {
       model.addAttribute("errorMessage", e.getMessage());
       model.addAttribute("jobAdId", jobAdId);

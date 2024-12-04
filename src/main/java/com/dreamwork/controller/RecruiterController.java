@@ -3,6 +3,7 @@ package com.dreamwork.controller;
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.CandidateDTO;
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.exception.IncorrectPasswordException;
 import com.dreamwork.model.job.JobAd;
 import com.dreamwork.model.user.Candidate;
 import com.dreamwork.model.user.Recruiter;
@@ -17,7 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,9 +97,13 @@ public class RecruiterController {
   @PostMapping("/update")
   public String updateRecruiter(@ModelAttribute Recruiter recruiter,
       @RequestParam String currentPassword) {
-    recruiterService.updateRecruiter(recruiter, currentPassword);
+    try {
+      recruiterService.updateRecruiter(recruiter, currentPassword);
+    } catch (IncorrectPasswordException e) {
+      return "redirect:/recruiters/update?error";
+    }
 
-    return "redirect:/recruiters?successUpdate=true";
+    return "redirect:/recruiters?update";
   }
 
   /**
@@ -125,7 +129,7 @@ public class RecruiterController {
   public String createJobAd(JobAd jobAd) {
     jobAdService.createJobAd(jobAd);
 
-    return "redirect:/recruiters?successCreate=true";
+    return "redirect:/recruiters?create";
   }
 
   /**

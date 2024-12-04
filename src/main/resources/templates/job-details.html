@@ -1,186 +1,177 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"
-      xmlns:th="http://www.thymeleaf.org" >
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Job Description</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0 auto;
-            padding: 0;
-            min-height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-        }
+  <meta charset="UTF-8">
+  <title>Job Description</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0 auto;
+      padding: 0;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
 
-        li {
-            margin-bottom: 10px;
-        }
+    li {
+      margin-bottom: 10px;
+    }
 
-        footer {
-            background-color: gray;
-            padding: 15px 0;
-            text-align: center;
-            margin-top: auto;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-            width: 100%;
-        }
+    footer {
+      background-color: gray;
+      padding: 15px 0;
+      text-align: center;
+      margin-top: auto;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
 
-        footer p {
-            margin: 0;
-            font-size: 14px;
-        }
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
 
-        h2 {
-            margin-top: 20px;
-            font-size: 28px;
-            color: #333;
-            text-align: center;
-        }
+    h2 {
+      margin-top: 20px;
+      font-size: 28px;
+      color: #333;
+      text-align: center;
+    }
 
-        nav {
-            width: 100%;
-            border-bottom: 1px solid #dee2e6;
-            display: flex;
-            justify-content: flex-end;
-            padding: 5px;
-            background-color: lightgray;
-        }
+    nav {
+      width: 100%;
+      border-bottom: 1px solid #dee2e6;
+      display: flex;
+      justify-content: flex-end;
+      padding: 5px;
+      background-color: lightgray;
+    }
 
-        nav .btn {
-            margin: 0 5px;
-        }
+    nav .btn {
+      margin: 0 5px;
+    }
 
-        nav button:hover {
-            transform: scale(1.05);
-        }
+    nav button:hover {
+      transform: scale(1.05);
+    }
 
-        nav a {
-            margin-left: 5px;
-            margin-right: 5px;
-        }
+    nav a {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
 
-        nav a:hover {
-            transform: scale(1.05);
-        }
+    nav a:hover {
+      transform: scale(1.05);
+    }
 
-        nav div {
-            display: flex;
-            align-items: center;
-        }
-
-
-        nav .btn:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-home {
-            border: none;
-            font-size: x-large;
-        }
-
-        .btn-home:hover {
-            border: none;
-            background: none;
-            color: #004085;
-            font-size: x-large;
-        }
-
-        .container {
-            margin-top: 20px;
-            background-color: white;
-            padding: 40px 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 800px;
-        }
+    nav div {
+      display: flex;
+      align-items: center;
+    }
 
 
-    </style>
+    nav .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-home {
+      border: none;
+      font-size: x-large;
+    }
+
+    .btn-home:hover {
+      border: none;
+      background: none;
+      color: #004085;
+      font-size: x-large;
+    }
+
+    .container {
+      margin-top: 20px;
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 800px;
+    }
+
+
+  </style>
 </head>
 
 <body>
 <nav>
-    <div class="d-flex w-100 align-items-center">
-        <!-- Home Button on the Left -->
-        <div class="me-auto">
-            <a class="btn btn-outline-primary btn-home" th:href="@{/}" role="button">Dream Work</a>
-        </div>
-
-        <!-- Right Side Content -->
-        <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
-            <form th:action="@{/logout}" method="post" class="me-2">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <button type="submit" class="btn btn-danger">Logout</button>
-            </form>
-            <a class="btn btn-secondary me-2" sec:authorize="hasRole('CANDIDATE')"
-               th:href="@{/candidates}">Account</a>
-            <a class="btn btn-secondary" sec:authorize="hasRole('RECRUITER')" th:href="@{/recruiters}">Account</a>
-        </div>
-        <div sec:authorize="!isAuthenticated()">
-            <a class="btn btn-success me-2" th:href="@{/login}">Login</a>
-            <a class="btn btn-primary" th:href="@{/register}">Register</a>
-        </div>
+  <div class="d-flex w-100 align-items-center">
+    <!-- Home Button on the Left -->
+    <div class="me-auto">
+      <a class="btn btn-outline-primary btn-home" th:href="@{/}" role="button">Dream Work</a>
     </div>
+
+    <!-- Right Side Content -->
+    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+      <form th:action="@{/logout}" method="post" class="me-2">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit" class="btn btn-danger">Logout</button>
+      </form>
+      <a class="btn btn-secondary me-2" sec:authorize="hasRole('CANDIDATE')"
+         th:href="@{/candidates}">Account</a>
+      <a class="btn btn-secondary" sec:authorize="hasRole('RECRUITER')" th:href="@{/recruiters}">Account</a>
+    </div>
+    <div sec:authorize="!isAuthenticated()">
+      <a class="btn btn-success me-2" th:href="@{/login}">Login</a>
+      <a class="btn btn-primary" th:href="@{/register}">Register</a>
+    </div>
+  </div>
 </nav>
-<div class="text-center">
-    <div th:if="${param.alreadyApplied}" class="alert alert-info" role="alert">
-        <span>You have already applied for this job!</span>
-    </div>
-</div>
 <div class="container mt-5">
-    <div class="text-center">
-        <h1 class="mb-4"> Position: <span th:text="${job.position}"></span></h1>
-        <h2 class="mb-4"> Company: <span th:text="${job.company}"></span></h2>
-        <h6 class="mb-4 text-muted fst-italic"> Date Posted: <span th:text="${job.date}"></span></h6>
-    </div>
+  <div class="text-center">
+    <h1 class="mb-4"> Position: <span th:text="${job.position}"></span></h1>
+    <h2 class="mb-4"> Company: <span th:text="${job.company}"></span></h2>
+    <h6 class="mb-4 text-muted fst-italic"> Date Posted: <span th:text="${job.date}"></span></h6>
+  </div>
 
-    <div class="row">
-        <div class="card">
-            <div class="card-body">
+  <div class="row">
+    <div class="card">
+      <div class="card-body">
 
-                <p class="card-text">Location: <span th:text="${job.city}"></span></p>
-                <p class="card-text">Main Tech Stack: <span th:text="${job.mainTechStack}"></span></p>
-                <p class="card-text">Experience Level: <span th:text="${job.seniority}"></span></p>
-                <p class="card-text">Description: <span th:text="${job.description}"></span></p>
+        <p class="card-text">Location: <span th:text="${job.city}"></span></p>
+        <p class="card-text">Main Tech Stack: <span th:text="${job.mainTechStack}"></span></p>
+        <p class="card-text">Experience Level: <span th:text="${job.seniority}"></span></p>
+        <p class="card-text">Description: <span th:text="${job.description}"></span></p>
 
-                <div th:if="${alreadyApplied}">
-                    <p style="color: #6e0b0b;">You have already applied for this job.</p>
-                    <button type="button" disabled>Already Applied</button>
-                </div>
-                <div th:if="${!alreadyApplied}">
-                    <p>Apply button will be visible only if you are logged in as a candidate.</p>
-                    <a sec:authorize="hasRole('CANDIDATE')" class="btn btn-primary"
-                       th:href="@{/candidates/apply/job-ads/{id}(id=${job.id})}" target="_blank">Apply</a>
-                </div>
-            </div>
+        <p>Apply button will be visible only if you are logged in as a candidate.</p>
+        <div sec:authorize="hasRole('CANDIDATE')" class="text-center">
+<!--          <button th:if="${alreadyApplied}" class="btn btn-secondary" disabled>Already Applied-->
+<!--          </button>-->
+          <a class="btn btn-primary"
+             th:href="@{/candidates/apply/job-ads/{id}(id=${job.id})}" target="_blank">Apply</a>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-
 <footer>
-    <p>&copy; 2024 Dream Work. All rights reserved.</p>
+  <p>&copy; 2024 Dream Work. All rights reserved.</p>
 </footer>
-
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var alerts = document.getElementsByClassName("alert");
-        Array.from(alerts).forEach(function (alert) {
-            setTimeout(function () {
-                alert.style.display = "none";
-            }, 5000); // 5 seconds
-        });
+  document.addEventListener("DOMContentLoaded", function () {
+    var alerts = document.getElementsByClassName("alert");
+    Array.from(alerts).forEach(function (alert) {
+      setTimeout(function () {
+        alert.style.display = "none";
+      }, 5000); // 5 seconds
     });
+  });
 </script>
 </body>
 </html>
