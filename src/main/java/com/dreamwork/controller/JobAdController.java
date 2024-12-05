@@ -104,8 +104,6 @@ public class JobAdController {
   public String getJobAdDetails(Model model, @PathVariable Long jobAdId) {
     JobAdDTO jobAdDTO = jobAdService.getJobAdById(jobAdId);
     model.addAttribute("job", jobAdDTO);
-//    model.addAttribute(
-//        "alreadyApplied", jobAdService.hasCandidateAlreadyApplied(jobAdId));
     return "job-details";
   }
 }

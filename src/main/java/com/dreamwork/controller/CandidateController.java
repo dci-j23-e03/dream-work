@@ -2,6 +2,7 @@ package com.dreamwork.controller;
 
 import com.dreamwork.authentication.AuthenticationService;
 import com.dreamwork.dto.JobAdDTO;
+import com.dreamwork.exception.AlreadyAppliedException;
 import com.dreamwork.exception.CvFileSaveException;
 import com.dreamwork.exception.IncorrectPasswordException;
 import com.dreamwork.exception.JobAdNotFoundException;
@@ -126,7 +127,7 @@ public class CandidateController {
     try {
       jobAdService.applyToJob(jobAdId, cvFile);
       return "redirect:/candidates?apply";
-    } catch (JobAdNotFoundException | CvFileSaveException e) {
+    } catch (JobAdNotFoundException | AlreadyAppliedException | CvFileSaveException e) {
       model.addAttribute("errorMessage", e.getMessage());
       model.addAttribute("jobAdId", jobAdId);
       model.addAttribute("candidate", authenticationService.getCurrentUser());
