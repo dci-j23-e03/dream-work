@@ -2,114 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0 auto;
-      padding: 0;
-      min-height: 100vh;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .register-text {
-      margin: 25px;
-    }
-
-    footer {
-      background-color: gray;
-      padding: 15px 0;
-      text-align: center;
-      margin-top: 50px;
-      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-      width: 100%;
-    }
-
-    footer p {
-      margin: 0;
-      font-size: 14px;
-    }
-
-    .container {
-      margin-top: 20px;
-      background-color: white;
-      padding: 40px 30px;
-      border-radius: 8px;
-      box-shadow: 0 50px 50px rgba(0, 0, 0, 0.1);
-      width: 90%;
-      max-width: 800px;
+      background-color: #f8f9fa;
     }
 
     nav {
-      width: 100%;
-      border-bottom: 1px solid #dee2e6;
-      display: flex;
-      justify-content: flex-end;
-      padding: 5px;
-      background-color: lightgray;
+      background-color: #e3f2fd;
     }
 
-    nav .btn {
-      margin: 0 5px;
+    .container {
+      max-width: 500px;
+      margin-top: 5%;
     }
 
-    nav button:hover {
-      transform: scale(1.05);
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #6c757d;
     }
-
-    nav a {
-      margin-left: 5px;
-      margin-right: 5px;
-    }
-
-    nav a:hover {
-      transform: scale(1.05);
-    }
-
-    nav div {
-      display: flex;
-      align-items: center;
-    }
-
-
-    .btn:hover {
-      transform: scale(1.05);
-    }
-
-    .btn-home {
-      border: none;
-      font-size: x-large;
-    }
-
-    .btn-home:hover {
-      border: none;
-      background: none;
-      color: #004085;
-      font-size: x-large;
-    }
-
   </style>
 </head>
 <body>
-<nav>
-  <div class="d-flex w-100 align-items-center">
-    <!-- Home Button on the Left -->
-    <div class="me-auto">
-      <a class="btn btn-outline-primary btn-home" th:href="@{/}" role="button">Dream Work</a>
-    </div>
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a th:href="@{/}" class="navbar-brand">Dream Work</a>
   </div>
 </nav>
-<div class="container mt-5">
-  <div class="text-center">
-    <h1 class="mb-4">Login</h1>
-    <form th:action="@{/login}" method="post" class="mt-3">
+<div class="container bg-white p-4 rounded shadow">
+  <h1 class="text-center mb-4">Login</h1>
 
+  <form th:action="@{/login}" method="post">
+
+    <div class="text-center">
       <div th:if="${param.success}" class="alert alert-success" role="alert">
         Registration successful.
       </div>
@@ -117,25 +47,26 @@
       <div th:if="${param.error}" class="alert alert-danger" role="alert">
         Invalid username or password! Please try again.
       </div>
-
-      <div th:if="${param.logout}" class="alert alert-info" role="alert">
-        Logged out successfully.
-      </div>
-
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" id="username" name="username" class="form-control" required>
-
-        <label for="password" class="form-label">Password</label>
-        <input type="password" id="password" name="password" class="form-control" required>
-      </div>
-      <!-- CSRF token for login -->
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-      <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
-    <div class="mt-3 register-text">
-      <a th:href="@{/register}">Don't have an account? Register here</a>
     </div>
+
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" id="username" name="username" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" id="password" name="password" class="form-control" required>
+    </div>
+
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <div class="d-grid">
+      <button type="submit" class="btn btn-primary">Login</button>
+    </div>
+  </form>
+
+  <div class="text-center mt-3">
+    <a th:href="@{/register}" class="text-decoration-none">Don't have an account? Register here</a>
   </div>
 </div>
 <footer>
@@ -151,5 +82,6 @@
     });
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

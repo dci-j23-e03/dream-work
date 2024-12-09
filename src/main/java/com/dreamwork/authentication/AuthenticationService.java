@@ -17,11 +17,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- * Service for handling authentication-related tasks such as retrieving
- * the current authenticated user and logging out the user.
- *
- * This service retrieves user details based on the username
- * of the authenticated user and manages user context.
+ * Service for handling authentication-related tasks such as retrieving the current authenticated
+ * user and logging out the user.
+ * <p>
+ * This service retrieves user details based on the username of the authenticated user and manages
+ * user context.
  */
 @Service
 public class AuthenticationService {
@@ -43,11 +43,12 @@ public class AuthenticationService {
   }
 
   /**
-   * Retrieves the current authenticated user (Candidate or Recruiter) based on the username
-   * stored in the security context.
+   * Retrieves the current authenticated user (Candidate or Recruiter) based on the username stored
+   * in the security context.
    *
    * @return the User object representing the currently authenticated user.
-   * @throws UsernameNotFoundException if no user with the current username is found in the repositories.
+   * @throws UsernameNotFoundException if no user with the current username is found in the
+   *                                   repositories.
    */
   public User getCurrentUser() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -66,8 +67,9 @@ public class AuthenticationService {
 
   /**
    * Logs out the current user by clearing the security context and invalidating the HTTP session.
-   * This method ensures that the user's authentication details are removed from the context
-   * and that their session is properly invalidated to prevent any further access without re-authentication.
+   * This method ensures that the user's authentication details are removed from the context and
+   * that their session is properly invalidated to prevent any further access without
+   * re-authentication.
    */
   public void logout() {
     SecurityContextHolder.clearContext();

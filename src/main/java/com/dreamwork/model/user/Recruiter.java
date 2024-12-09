@@ -29,14 +29,13 @@ public class Recruiter extends User {
 
   /**
    * A list of job ads created by the recruiter.
-   *
-   * This is a one-to-many relationship with JobAd.
-   * Cascade operations are enabled to propagate changes from the recruiter
-   * to their associated job ads.
-   * Circular references are avoided with @JsonIgnore annotation.
+   * <p>
+   * This is a one-to-many relationship with JobAd. Cascade operations are enabled to propagate
+   * changes from the recruiter to their associated job ads. Circular references are avoided with
+   * JsonIgnore annotation.
    */
   @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnore // To prevent recursion when fetching JobAds that contain Recruiters
+  @JsonIgnore
   private List<JobAd> jobAds = new ArrayList<>();
 
   /**

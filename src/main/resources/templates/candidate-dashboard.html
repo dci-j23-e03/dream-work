@@ -2,168 +2,87 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Candidate Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0 auto;
-      padding: 0;
-      min-height: 100vh;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
+      background-color: #f8f9fa;
     }
 
-    h2 {
-      margin-top: 20px;
-      font-size: 28px;
-      color: #333;
-      text-align: center;
+    nav {
+      background-color: #e3f2fd;
     }
 
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    li {
-      margin-bottom: 10px;
-    }
-
-    .dashboard-container {
-      margin-top: 20px;
-      text-align: center;
-      background-color: white;
-      padding: 40px 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 90%;
-      max-width: 400px;
-    }
-
-    .dashboard-container h2 {
-      font-size: 24px;
-      color: #333;
-      margin-bottom: 30px;
-    }
-
-    .button {
-      display: block;
-      /*width: 100%;*/
-      padding: 15px;
-      margin: 10px 0;
-      font-size: 16px;
-      color: #333;
-      background-color: #007bff;
-      border: 2px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
+    nav a {
+      margin-right: 1rem;
       text-decoration: none;
+    }
+
+    .container {
+      margin-top: 5%;
+    }
+
+    .dashboard-links a {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      border-radius: 4px;
       transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
-    .button:hover {
+    .dashboard-links a:hover {
       background-color: #0056b3;
-      border-color: #0056b3;
-      color: #fff;
       transform: scale(1.05);
-    }
-
-    .btn-home {
-      border: none;
-      font-size: x-large;
-    }
-
-    .btn-home:hover {
-      scale: 1.05;
-      border: none;
-      background: none;
-      color: #004085;
-      font-size: x-large;
     }
 
     footer {
-      background-color: gray;
-      padding: 15px 0;
       text-align: center;
-      margin-top: auto;
-      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-      width: 100%;
-    }
-
-    footer p {
-      margin: 0;
-      font-size: 14px;
-    }
-
-
-    nav {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 5px;
-      background-color: lightgray;
-      z-index: 1000;
-      position: relative;
-      width: 100%;
-    }
-
-    nav div {
-      display: flex;
-      align-items: center;
-    }
-
-    nav button:hover {
-      transform: scale(1.05);
-    }
-
-    nav .btn {
-      margin: 0 5px;
-    }
-
-    nav .btn:hover {
-      transform: scale(1.05);
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #6c757d;
     }
   </style>
 </head>
 <body>
-<nav>
-  <div class="d-flex w-100 align-items-center">
-    <!-- Home Button on the Left -->
-    <div class="me-auto">
-      <a class="btn btn-outline-primary btn-home" th:href="@{/}" role="button">Dream Work</a>
-    </div>
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a th:href="@{/}" class="navbar-brand">Dream Work</a>
 
-    <!-- Right Side Content -->
     <div class="d-flex align-items-center">
       <form th:action="@{/logout}" method="post" class="me-2">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <button type="submit" class="btn btn-danger">Logout</button>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <button type="submit" class="btn btn-sm btn-danger">Logout</button>
       </form>
-      <a class="btn btn-secondary me-2" th:href="@{/candidates}">Account</a>
+      <a th:href="@{/candidates}" class="btn btn-sm btn-light">Account</a>
     </div>
   </div>
 </nav>
-<div class="text-center">
-  <div th:if="${param.update}" class="alert alert-success" role="alert">
-    <span>Account updated successfully.</span>
+<div class="container bg-white p-4 rounded shadow w-25">
+
+  <div class="text-center">
+    <div th:if="${param.update}" class="alert alert-success" role="alert">
+      <span>Account updated successfully.</span>
+    </div>
+    <div th:if="${param.apply}" class="alert alert-success" role="alert">
+      <span>You have applied successfully. Recruiter will contact you soon.</span>
+    </div>
   </div>
 
-  <div th:if="${param.apply}" class="alert alert-success" role="alert">
-    <span>You have applied successfully.</span>
+  <div>
+    <h4 class="text-center mb-4">Welcome, <span
+        th:text="${candidate.name} + ' ' + ${candidate.lastname} + '!'"></span></h4>
+    <div class="dashboard-links">
+      <a th:href="@{/candidates/update}" class="btn">Update Account</a>
+      <a th:href="@{/candidates/job-ads}" class="btn">Applied Job Ads</a>
+      <a th:href="@{/delete-account}" class="btn btn-danger">Delete Account</a>
+    </div>
   </div>
-</div>
-<div class="dashboard-container">
-  <h2>Welcome, <span th:text="${candidate.name} + ' ' + ${candidate.lastname}"></span></h2>
-
-  <a th:href="@{/candidates/update}" class="button">Update Account</a>
-  <a th:href="@{/candidates/job-ads}" class="button">Applied Job Ads</a>
-  <a th:href="@{/delete-account}" class="button">Delete Account</a>
-
 </div>
 <footer>
   <p>&copy; 2024 Dream Work. All rights reserved.</p>
@@ -178,5 +97,6 @@
     });
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

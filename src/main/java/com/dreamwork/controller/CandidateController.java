@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Controller class for managing candidate-related operations, including updating candidate information,
- * applying to job ads, and viewing applied job ads.
+ * Controller class for managing candidate-related operations, including updating candidate
+ * information, applying to job ads, and viewing applied job ads.
  */
 @Controller
 @RequestMapping("/candidates")
@@ -37,8 +37,8 @@ public class CandidateController {
   /**
    * Constructor with required services.
    *
-   * @param candidateService Service for managing Candidate
-   * @param jobAdService Service for managing Job Ads
+   * @param candidateService      Service for managing Candidate.
+   * @param jobAdService          Service for managing Job Ads.
    * @param authenticationService Service for managing authentication and current user context.
    */
   @Autowired
@@ -81,8 +81,8 @@ public class CandidateController {
   /**
    * Updates candidate information based on the provided data and current password.
    *
-   * @param candidate        Candidate object containing updated details.
-   * @param currentPassword  The current password for authentication.
+   * @param candidate       Candidate object containing updated details.
+   * @param currentPassword The current password for authentication.
    * @return Redirect URL to the candidate dashboard with a success flag.
    */
   @PostMapping("/update")
@@ -119,7 +119,8 @@ public class CandidateController {
    * @param model   Spring's model to add attributes for the view.
    * @param jobAdId The ID of the job ad to apply for.
    * @param cvFile  The candidate's CV file uploaded as part of the application.
-   * @return Redirect URL to the dashboard with success message or job application form in case of an error.
+   * @return Redirect URL to the dashboard with success message or job application form in case of
+   * an error.
    */
   @PostMapping("/apply/job-ads/{jobAdId}")
   public String applyToJob(Model model, @PathVariable Long jobAdId,
@@ -143,8 +144,8 @@ public class CandidateController {
    */
   @GetMapping("/job-ads")
   public String getAllJobAdsForCandidate(Model model) {
-    List<JobAdDTO> listAppliedJobs = jobAdService.getAllJobAdsForCandidate();
-    model.addAttribute("listAppliedJobs", listAppliedJobs);
-    return "candidate-list-applied-jobs";
+    List<JobAdDTO> appliedJobAds = jobAdService.getAllJobAdsForCandidate();
+    model.addAttribute("appliedJobAds", appliedJobAds);
+    return "candidate-applied-jobs";
   }
 }

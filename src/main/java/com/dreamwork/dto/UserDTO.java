@@ -8,7 +8,7 @@ import lombok.Setter;
  * Data Transfer Object (DTO) for the User entity
  * <p>
  * This class is used for transferring User data between service and controller. It keeps the
- * necessary fields with User's information, such as username, passwor, name, lastname, email and
+ * necessary fields with User's information, such as username, password, name, lastname, email and
  * role.
  * <p>
  * It uses lombok annotations to generate getters, setters and a no-argument constructor.
@@ -52,9 +52,8 @@ public class UserDTO {
   private String role;
 
   /**
-   * Constructor for a UserDTO with the provided username, password, name, last name, and
-   * email.
-   * The role field is not included in this constructor and can be set later. *
+   * Constructor for a UserDTO with the provided username, password, name, last name, and email. The
+   * role field is not included in this constructor and can be set later.
    *
    * @param username the username of the user.
    * @param password the password of the user.

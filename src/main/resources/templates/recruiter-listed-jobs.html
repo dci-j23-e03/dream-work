@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listed Jobs</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    nav {
+      background-color: #e3f2fd;
+    }
+
+    nav a {
+      margin-right: 1rem;
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+
+    .job-card {
+      background-color: white;
+      border: 1px solid #dee2e6;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .job-card:hover {
+      background-color: #f8f9fa;
+      transform: scale(1.02);
+    }
+
+    .job-card h4 {
+      margin-bottom: 2rem;
+      color: #007bff;
+    }
+
+    .job-card a {
+      text-decoration: none;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a th:href="@{/}" class="navbar-brand">Dream Work</a>
+
+    <div class="d-flex align-items-center">
+      <form th:action="@{/logout}" method="post" class="me-2">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <button type="submit" class="btn btn-sm btn-danger">Logout</button>
+      </form>
+      <a th:href="@{/recruiters}" class="btn btn-sm btn-light">Account</a>
+    </div>
+  </div>
+</nav>
+<div class="container my-4">
+  <h2 class="text-center mb-4">Listed Jobs</h2>
+
+  <div th:if="${param.delete}" class="text-center alert alert-success" role="alert">
+    Job Ad deleted successfully.
+  </div>
+
+  <div class="row justify-content-center">
+
+    <div th:if="${#lists.isEmpty(jobAds)}" class="text-center alert alert-info"
+         role="alert">
+      You haven't listed any job ads at the moment.
+    </div>
+
+    <div th:unless="${#lists.isEmpty(jobAds)}" class="col-md-8">
+      <div th:each="job : ${jobAds}" class="job-card">
+        <a th:href="@{/recruiters/job-ads/{id}(id=${job.id})}" target="_blank">
+
+          <h4 th:text="${job.position}">Job Title</h4>
+
+          <ul class="list-unstyled">
+            <li class="mb-3">
+              <i class="fas fa-building me-2"> </i>
+              <span th:text="${job.company}"></span>
+            </li>
+            <li class="mb-3">
+              <i class="fas fa-map-marker-alt me-2"> </i>
+              <span th:text="${job.city} + ', ' + ${job.country}"></span>
+            </li>
+            <li class="mb-3">
+              <i class="fas fa-calendar-alt me-2"> </i>
+              <span th:text="${job.date}"></span>
+            </li>
+          </ul>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+  <p>&copy; 2024 Dream Work. All rights reserved.</p>
+</footer>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var alerts = document.getElementsByClassName("alert");
+    Array.from(alerts).forEach(function (alert) {
+      setTimeout(function () {
+        alert.style.display = "none";
+      }, 5000); // 5 seconds
+    });
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
