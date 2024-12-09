@@ -8,19 +8,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * Handles errors that happen in the application and provides clear responses to clients.
  * <p>
- * This class uses Spring's ControllerAdvice annotation to catch errors from anywhere in the app. For each type
- * of error, it sends a response with the HTTP status code, status message, and a description of
- * what went wrong.
+ * This class uses Spring's ControllerAdvice annotation to catch errors from anywhere in the app.
+ * For each type of error, it sends a response with the HTTP status code, status message, and a
+ * description of what went wrong.
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
   /**
-   * Handles UserNotFoundException by returning an error response
-   * with HTTP status 404 (Not Found).
+   * Handles UserNotFoundException by returning an error response with HTTP status 404 (Not Found).
    *
    * @param e the exception that was thrown.
-   * @return an ErrorResponse with HTTP status 404 (Not Found) containing the reason, and error message.
+   * @return an ErrorResponse with HTTP status 404 (Not Found) containing the reason, and error
+   * message.
    */
   @ExceptionHandler(value = UserNotFoundException.class)
   public @ResponseBody ErrorResponse handleUserNotFoundException(UserNotFoundException e) {
@@ -31,11 +31,12 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles UserAlreadyExistsException by returning an error response
-   * with HTTP status 409 (Conflict).
+   * Handles UserAlreadyExistsException by returning an error response with HTTP status 409
+   * (Conflict).
    *
    * @param e the exception that was thrown.
-   * @return an  ErrorResponse with HTTP status 409 (Conflict) containing the reason, and error message.
+   * @return an  ErrorResponse with HTTP status 409 (Conflict) containing the reason, and error
+   * message.
    */
   @ExceptionHandler(value = UserAlreadyExistsException.class)
   public @ResponseBody ErrorResponse handleUserAlreadyExistsException(
@@ -47,11 +48,12 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles JobAdNotFoundException by returning an error response
-   * with HTTP status 404 (Not Found).
+   * Handles JobAdNotFoundException by returning an error response with HTTP status 404 (Not
+   * Found).
    *
    * @param e the exception that was thrown.
-   * @return an ErrorResponse with HTTP status 404 (Not Found) containing the reason, and error message.
+   * @return an ErrorResponse with HTTP status 404 (Not Found) containing the reason, and error
+   * message.
    */
   @ExceptionHandler(value = JobAdNotFoundException.class)
   public @ResponseBody ErrorResponse handleJobAdNotFoundException(JobAdNotFoundException e) {
@@ -62,11 +64,12 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles IncorrectPasswordException by returning an error response
-   * with HTTP status 401 (Unauthorized).
+   * Handles IncorrectPasswordException by returning an error response with HTTP status 401
+   * (Unauthorized).
    *
    * @param e the exception that was thrown.
-   * @return an ErrorResponse with HTTP status 401 (Unauthorized) containing the reason, and error message.
+   * @return an ErrorResponse with HTTP status 401 (Unauthorized) containing the reason, and error
+   * message.
    */
   @ExceptionHandler(value = IncorrectPasswordException.class)
   public @ResponseBody ErrorResponse handleIncorrectPasswordException(
@@ -78,11 +81,12 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles AlreadyAppliedException by returning an error response
-   * with HTTP status 400 (Bad Request).
+   * Handles AlreadyAppliedException by returning an error response with HTTP status 400 (Bad
+   * Request).
    *
    * @param e the exception that was thrown.
-   * @return an ErrorResponse with HTTP status 400 (Bad Request) containing the reason, and error message.
+   * @return an ErrorResponse with HTTP status 400 (Bad Request) containing the reason, and error
+   * message.
    */
   @ExceptionHandler(value = AlreadyAppliedException.class)
   public @ResponseBody ErrorResponse handleAlreadyAppliedException(AlreadyAppliedException e) {
@@ -93,11 +97,12 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles CvFileSaveException by returning an error response
-   * with HTTP status 500 (Internal Server Error).
+   * Handles CvFileSaveException by returning an error response with HTTP status 500 (Internal
+   * Server Error).
    *
    * @param e the exception that was thrown.
-   * @return an ErrorResponse with HTTP status 500 (Internal Server Error) containing the reason, and error message.
+   * @return an ErrorResponse with HTTP status 500 (Internal Server Error) containing the reason,
+   * and error message.
    */
   @ExceptionHandler(value = CvFileSaveException.class)
   public @ResponseBody ErrorResponse handleCvFileSaveException(CvFileSaveException e) {
@@ -108,11 +113,12 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles CvFileNotFoundException by returning an error response
-   * with HTTP status 404 (Not Found).
+   * Handles CvFileNotFoundException by returning an error response with HTTP status 404 (Not
+   * Found).
    *
    * @param e the exception that was thrown.
-   * @return an ErrorResponse with HTTP status 404 (Not Found) containing the reason, and error message.
+   * @return an ErrorResponse with HTTP status 404 (Not Found) containing the reason, and error
+   * message.
    */
   @ExceptionHandler(value = CvFileNotFoundException.class)
   public @ResponseBody ErrorResponse handleCvFileNotFoundException(CvFileNotFoundException e) {

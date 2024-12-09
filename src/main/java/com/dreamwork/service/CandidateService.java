@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service class for managing candidate operations
- * This class handles CRUD operations for candidates, authentication and logic integration
+ * Service class for managing candidate operations This class handles CRUD operations for
+ * candidates, authentication and logic integration
  */
 @Service
 public class CandidateService {
@@ -33,12 +33,12 @@ public class CandidateService {
   private final JobAdRepository jobAdRepository;
 
   /**
-   * Constructor for dependencies
+   * Constructor for dependencies.
    *
-   * @param candidateRepository Repository for managing Candidate entities
-   * @param passwordEncoder Encoder for security
-   * @param authenticationService Service for managing authenticated user operations
-   * @param jobAdRepository Repository for managing Job Ad entities
+   * @param candidateRepository   repository for managing Candidate entities
+   * @param passwordEncoder       encoder for security
+   * @param authenticationService service for managing authenticated user operations
+   * @param jobAdRepository       repository for managing Job Ad entities
    */
   @Autowired
   public CandidateService(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder,
@@ -50,10 +50,10 @@ public class CandidateService {
   }
 
   /**
-   * This method saves a new candidate to the database
+   * This method saves a new candidate to the database.
    *
    * @param user the user details (username, password, name, lastname, email)
-   * @throws UserAlreadyExistsException if username or email already exists.
+   * @throws UserAlreadyExistsException if username or email already exists
    */
   @Transactional
   public void saveCandidate(UserDTO user) {
@@ -77,10 +77,10 @@ public class CandidateService {
   }
 
   /**
-   * This method updates authenticated Candidate details
+   * This method updates authenticated Candidate details.
    *
-   * @param updatedCandidate The updated Candidate details
-   * @param password The current password for authentication
+   * @param updatedCandidate the updated Candidate details
+   * @param password         the current password for authentication
    * @throws IncorrectPasswordException if the password is invalid
    */
   @Transactional
@@ -105,10 +105,10 @@ public class CandidateService {
   }
 
   /**
-   * deletes the candidate's account
+   * Deletes the candidate's account.
    *
-   * @param deletePassword the password for authentication.
-   * @return true if the deletion was successful.
+   * @param deletePassword the password for authentication
+   * @return true if the deletion was successful
    * @throws IncorrectPasswordException if the password is invalid
    */
   @Transactional
@@ -126,12 +126,12 @@ public class CandidateService {
   }
 
   /**
-   * this method retrieves the cv file of a candidate by their ID
+   * This method retrieves the cv file of a candidate by their ID.
    *
    * @param candidateId the ID of the candidate
    * @return Candidate entity with CV details
-   * @throws UserNotFoundException if the candidate does not exist.
-   * @throws CvFileNotFoundException if the cv file is not found.
+   * @throws UserNotFoundException   if the candidate does not exist
+   * @throws CvFileNotFoundException if the cv file is not found
    */
   @Transactional
   public Candidate viewCv(Long candidateId) {
@@ -151,7 +151,7 @@ public class CandidateService {
   }
 
   /**
-   * this method retrieves all candidates who applied for a specific job ad
+   * This method retrieves all candidates who applied for a specific job ad.
    *
    * @param jobAdId the ID of the job ad
    * @return list of CandidateDTO objects representing the candidates

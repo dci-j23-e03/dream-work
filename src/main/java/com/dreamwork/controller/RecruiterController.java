@@ -42,12 +42,12 @@ public class RecruiterController {
   private final AuthenticationService authenticationService;
 
   /**
-   * Constructor for required services
+   * Constructor for required services.
    *
-   * @param recruiterService the service for managing recruiter operations.
-   * @param jobAdService the service for managing job ad operations.
-   * @param candidateService the service for managing candidate operations.
-   * @param authenticationService the service for authentication and user context.
+   * @param recruiterService      The service for managing recruiter operations.
+   * @param jobAdService          The service for managing job ad operations.
+   * @param candidateService      The service for managing candidate operations.
+   * @param authenticationService The service for authentication and user context.
    */
   @Autowired
   public RecruiterController(RecruiterService recruiterService, JobAdService jobAdService,
@@ -76,8 +76,8 @@ public class RecruiterController {
    * Displays the form for updating recruiter information.
    *
    * @param model            Spring's model to add attributes for the view.
-   * @param updatedRecruiter a placeholder for the updated recruiter information.
-   * @return the name of the update recruiter information view.
+   * @param updatedRecruiter A placeholder for the updated recruiter information.
+   * @return The name of the update recruiter information view.
    */
   @GetMapping("/update")
   public String getUpdateInfo(Model model, Recruiter updatedRecruiter) {
@@ -90,9 +90,9 @@ public class RecruiterController {
   /**
    * Updates the recruiter details.
    *
-   * @param recruiter       the updated recruiter data.
-   * @param currentPassword the current password for verification.
-   * @return a redirect to the recruiter dashboard with a success flag.
+   * @param recruiter       The updated recruiter data.
+   * @param currentPassword The current password for verification.
+   * @return A redirect to the recruiter dashboard with a success flag.
    */
   @PostMapping("/update")
   public String updateRecruiter(@ModelAttribute Recruiter recruiter,
@@ -110,7 +110,7 @@ public class RecruiterController {
    * Displays the form for creating a new job ad.
    *
    * @param model Spring's model to add attributes for the view.
-   * @return the name of the create job ad view.
+   * @return The name of the create job ad view.
    */
   @GetMapping("/job-ads/create")
   public String getCreateJobAdForm(Model model) {
@@ -122,8 +122,8 @@ public class RecruiterController {
   /**
    * Creates a new job ad.
    *
-   * @param jobAd the job ad to create.
-   * @return a redirect to the recruiter dashboard with a success flag.
+   * @param jobAd The job ad to create.
+   * @return A redirect to the recruiter dashboard with a success flag.
    */
   @PostMapping("/job-ads/create")
   public String createJobAd(JobAd jobAd) {
@@ -135,38 +135,36 @@ public class RecruiterController {
   /**
    * Deletes a job ad by its ID.
    *
-   * @param id the ID of the job ad to delete.
-   * @return a response entity redirecting to the job ads list.
+   * @param id The ID of the job ad to delete.
+   * @return A redirect to the recruiter job ads with a success flag.
    */
   @PostMapping("/job-ads/delete/{id}")
-  public ResponseEntity<Void> deleteJobAd(@PathVariable Long id) {
+  public String deleteJobAd(@PathVariable Long id) {
     jobAdService.deleteJobAd(id);
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Location", "/recruiters/job-ads");
-    return new ResponseEntity<>(headers, HttpStatus.FOUND); // HTTP 302: Redirect
+    return "redirect:/recruiters/job-ads?delete";
   }
 
   /**
    * Retrieves all job ad created by the recruiter.
    *
-   * @param model  Spring's model to add attributes for the view.
-   * @return the name of the recruiter job ads list view.
+   * @param model Spring's model to add attributes for the view.
+   * @return The name of the recruiter job ads list view.
    */
   @GetMapping("/job-ads")
   public String getAllJobAdsForRecruiter(Model model) {
     List<JobAdDTO> jobAdDTOs = jobAdService.getAllJobAdsForRecruiter();
     model.addAttribute("jobAds", jobAdDTOs);
 
-    return "recruiter-job-ads";
+    return "recruiter-listed-jobs";
   }
 
   /**
    * Retrieves the details of a specific job ad by its ID as a recruiter.
    *
-   * @param id    the ID of the job ad.
-   * @param model  Spring's model to add attributes for the view.
-   * @return the name of the job ad details view.
+   * @param id    The ID of the job ad.
+   * @param model Spring's model to add attributes for the view.
+   * @return The name of the job ad details view.
    */
   @GetMapping("/job-ads/{id}")
   public String getJobAdDetails(@PathVariable Long id, Model model) {
@@ -175,14 +173,14 @@ public class RecruiterController {
 
     List<CandidateDTO> candidates = candidateService.getAllCandidatesForJobAd(id);
     model.addAttribute("candidates", candidates);
-    return "/recruiter-job-description";
+    return "recruiter-job-details";
   }
 
   /**
    * Provides the CV of a candidate for viewing.
    *
-   * @param candidateId the ID of the candidate whose CV is being viewed.
-   * @return a response entity with the CV file as an PDF.
+   * @param candidateId The ID of the candidate whose CV is being viewed.
+   * @return A response entity with the CV file as an PDF.
    */
   @GetMapping("/job-ads/view-cv/candidate/{candidateId}")
   public ResponseEntity<byte[]> viewCv(@PathVariable Long candidateId) {

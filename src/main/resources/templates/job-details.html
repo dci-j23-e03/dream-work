@@ -1,161 +1,111 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Job Description</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Details</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0 auto;
-      padding: 0;
-      min-height: 100vh;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    li {
-      margin-bottom: 10px;
-    }
-
-    footer {
-      background-color: gray;
-      padding: 15px 0;
-      text-align: center;
-      margin-top: auto;
-      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-      width: 100%;
-    }
-
-    footer p {
-      margin: 0;
-      font-size: 14px;
-    }
-
-    h2 {
-      margin-top: 20px;
-      font-size: 28px;
-      color: #333;
-      text-align: center;
+      background-color: #f8f9fa;
     }
 
     nav {
-      width: 100%;
-      border-bottom: 1px solid #dee2e6;
-      display: flex;
-      justify-content: flex-end;
-      padding: 5px;
-      background-color: lightgray;
-    }
-
-    nav .btn {
-      margin: 0 5px;
-    }
-
-    nav button:hover {
-      transform: scale(1.05);
+      background-color: #e3f2fd;
     }
 
     nav a {
-      margin-left: 5px;
-      margin-right: 5px;
+      margin-right: 1rem;
+      text-decoration: none;
     }
 
-    nav a:hover {
-      transform: scale(1.05);
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #6c757d;
     }
 
-    nav div {
-      display: flex;
-      align-items: center;
-    }
-
-
-    nav .btn:hover {
-      transform: scale(1.05);
-    }
-
-    .btn-home {
-      border: none;
-      font-size: x-large;
-    }
-
-    .btn-home:hover {
-      border: none;
-      background: none;
-      color: #004085;
-      font-size: x-large;
-    }
-
-    .container {
-      margin-top: 20px;
+    .job-card {
       background-color: white;
-      padding: 40px 30px;
+      border: 1px solid #dee2e6;
+      padding: 1.5rem;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 800px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
     }
 
-
+    .job-card h4 {
+      margin-bottom: 2rem;
+    }
   </style>
 </head>
-
 <body>
-<nav>
-  <div class="d-flex w-100 align-items-center">
-    <!-- Home Button on the Left -->
-    <div class="me-auto">
-      <a class="btn btn-outline-primary btn-home" th:href="@{/}" role="button">Dream Work</a>
-    </div>
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a th:href="@{/}" class="navbar-brand">Dream Work</a>
 
-    <!-- Right Side Content -->
     <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
       <form th:action="@{/logout}" method="post" class="me-2">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <button type="submit" class="btn btn-danger">Logout</button>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <button type="submit" class="btn btn-sm btn-danger">Logout</button>
       </form>
-      <a class="btn btn-secondary me-2" sec:authorize="hasRole('CANDIDATE')"
-         th:href="@{/candidates}">Account</a>
-      <a class="btn btn-secondary" sec:authorize="hasRole('RECRUITER')" th:href="@{/recruiters}">Account</a>
+      <a sec:authorize="hasRole('CANDIDATE')" th:href="@{/candidates}"
+         class="btn btn-sm btn-light">Account</a>
+      <a sec:authorize="hasRole('RECRUITER')" th:href="@{/recruiters}"
+         class="btn btn-sm btn-light">Account</a>
     </div>
-    <div sec:authorize="!isAuthenticated()">
-      <a class="btn btn-success me-2" th:href="@{/login}">Login</a>
-      <a class="btn btn-primary" th:href="@{/register}">Register</a>
+
+    <div sec:authorize="!isAuthenticated()" class="d-flex align-items-center">
+      <a th:href="@{/login}" class="btn btn-sm btn-primary">Login</a>
+      <a th:href="@{/register}" class="btn btn-sm btn-secondary">Register</a>
     </div>
   </div>
 </nav>
-<div class="container mt-5">
-  <div class="text-center">
-    <h1 class="mb-4"> Position: <span th:text="${job.position}"></span></h1>
-    <h2 class="mb-4"> Company: <span th:text="${job.company}"></span></h2>
-    <h6 class="mb-4 text-muted fst-italic"> Date Posted: <span th:text="${job.date}"></span></h6>
-  </div>
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 job-card">
 
-  <div class="row">
-    <div class="card">
-      <div class="card-body">
+      <h2 class="text-center mb-4"><span th:text="${jobAd.position}"></span></h2>
 
-        <p class="card-text">Location: <span th:text="${job.city}"></span></p>
-        <p class="card-text">Main Tech Stack: <span th:text="${job.mainTechStack}"></span></p>
-        <p class="card-text">Experience Level: <span th:text="${job.seniority}"></span></p>
-        <p class="card-text">Description: <span th:text="${job.description}"></span></p>
+      <ul class="list-unstyled">
+        <li class="mb-3">
+          <i class="fas fa-calendar-alt me-2"> </i>
+          <span th:text="${jobAd.date}"></span>
+        </li>
+        <li class="mb-3">
+          <i class="fas fa-building me-2"> </i>
+          <span th:text="${jobAd.company}"></span>
+        </li>
+        <li class="mb-3">
+          <i class="fas fa-map-marker-alt me-2"> </i>
+          <span th:text="${jobAd.city} + ', ' + ${jobAd.country}"></span>
+        </li>
+        <li class="mb-3">
+          <i class="fas fa-user-tie me-2"> </i>
+          <span th:text="${jobAd.seniority}"></span>
+        </li>
+        <li class="mb-3">
+          <i class="fas fa-code me-2"> </i>
+          <span th:text="${jobAd.mainTechStack}"></span>
+        </li>
+        <li class="mb-3">
+          <i>Description: </i>
+          <p><span th:text="${jobAd.description}"></span></p>
+        </li>
+      </ul>
 
-        <p>Apply button will be visible only if you are logged in as a candidate.</p>
-        <div sec:authorize="hasRole('CANDIDATE')" class="text-center">
-<!--          <button th:if="${alreadyApplied}" class="btn btn-secondary" disabled>Already Applied-->
-<!--          </button>-->
-          <a class="btn btn-primary"
-             th:href="@{/candidates/apply/job-ads/{id}(id=${job.id})}" target="_blank">Apply</a>
-        </div>
+      <p class="text-center"><i>
+        Apply button will be visible only if you are logged in as a candidate!
+      </i></p>
+
+      <div sec:authorize="hasRole('CANDIDATE')" class="mt-4 text-center">
+        <a th:href="@{/candidates/apply/job-ads/{id}(id=${jobAd.id})}"
+           class="btn btn-primary w-25">Apply</a>
       </div>
     </div>
   </div>
@@ -163,15 +113,6 @@
 <footer>
   <p>&copy; 2024 Dream Work. All rights reserved.</p>
 </footer>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var alerts = document.getElementsByClassName("alert");
-    Array.from(alerts).forEach(function (alert) {
-      setTimeout(function () {
-        alert.style.display = "none";
-      }, 5000); // 5 seconds
-    });
-  });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

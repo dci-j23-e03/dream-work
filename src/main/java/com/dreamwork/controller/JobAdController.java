@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller class for handling job ads-related operations such as listing, filtering,
- * and viewing job ad details.
+ * Controller class for handling job ads-related operations such as listing, filtering, and viewing
+ * job ad details.
  */
 @Controller
 @RequestMapping("/job-ads")
@@ -26,8 +26,7 @@ public class JobAdController {
   /**
    * Constructor  with required services.
    *
-   * @param jobAdService          Service for managing job ad operations.
-   * @param authenticationService Service for managing authentication and current user context.
+   * @param jobAdService Service for managing job ad operations.
    */
   @Autowired
   public JobAdController(JobAdService jobAdService) {
@@ -47,28 +46,29 @@ public class JobAdController {
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
       Model model) {
-    Page<JobAdDTO> jobPage = jobAdService.getAllJobAds(page, size);
+    Page<JobAdDTO> jobAdsPage = jobAdService.getAllJobAds(page, size);
 
-    long totalJobs = jobPage.getTotalElements();
+    long totalJobAds = jobAdsPage.getTotalElements();
 
-    model.addAttribute("jobAds", jobPage.getContent());
+    model.addAttribute("jobAds", jobAdsPage.getContent());
     model.addAttribute("currentPage", page);
-    model.addAttribute("totalPages", jobPage.getTotalPages());
-    model.addAttribute("totalJobs", totalJobs);
+    model.addAttribute("totalPages", jobAdsPage.getTotalPages());
+    model.addAttribute("totalJobAds", totalJobAds);
 
-    return "job-ads-list";
+    return "job-ads";
   }
 
   /**
    * Filters job ads based on criteria such as seniority, city, posted date and tech stack.
    *
-   * @param seniority the seniority level to filter by (e.g., JUNIOR, MID_LEVEL, SENIOR); optional.
-   * @param city the city to filter by; optional.
+   * @param seniority     the seniority level to filter by (e.g., JUNIOR, MID_LEVEL, SENIOR);
+   *                      optional.
+   * @param city          the city to filter by; optional.
    * @param mainTechStack the main tech stack to filter by; optional.
-   * @param date the date to filter jobs posted on or after; optional.
-   * @param page the current page index for pagination; defaults to 0.
-   * @param size the number of job ads per page; defaults to 10 if not specified.
-   * @param model Spring's model to add attributes for the view.
+   * @param date          the date to filter jobs posted on or after; optional.
+   * @param page          the current page index for pagination; defaults to 0.
+   * @param size          the number of job ads per page; defaults to 10 if not specified.
+   * @param model         Spring's model to add attributes for the view.
    * @return View html file for the filtered list of job ads.
    */
   @GetMapping("/filter")
@@ -80,17 +80,17 @@ public class JobAdController {
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
       Model model) {
-    Page<JobAdDTO> jobPage = jobAdService.getFilteredJobAds(
+    Page<JobAdDTO> jobAdsPage = jobAdService.getFilteredJobAds(
         seniority, city, mainTechStack, date, page, size);
 
-    long totalJobs = jobPage.getTotalElements();
+    long totalJobAds = jobAdsPage.getTotalElements();
 
-    model.addAttribute("jobAds", jobPage.getContent());
+    model.addAttribute("jobAds", jobAdsPage.getContent());
     model.addAttribute("currentPage", page);
-    model.addAttribute("totalPages", jobPage.getTotalPages());
-    model.addAttribute("totalJobs", totalJobs);
+    model.addAttribute("totalPages", jobAdsPage.getTotalPages());
+    model.addAttribute("totalJobAds", totalJobAds);
 
-    return "job-ads-list";
+    return "job-ads";
   }
 
   /**
@@ -103,7 +103,7 @@ public class JobAdController {
   @GetMapping("/{jobAdId}")
   public String getJobAdDetails(Model model, @PathVariable Long jobAdId) {
     JobAdDTO jobAdDTO = jobAdService.getJobAdById(jobAdId);
-    model.addAttribute("job", jobAdDTO);
+    model.addAttribute("jobAd", jobAdDTO);
     return "job-details";
   }
 }

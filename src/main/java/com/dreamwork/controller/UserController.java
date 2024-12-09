@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller for handling user-related actions such as registration, login,
- * and account management. Supports operations for both candidates and recruiters.
+ * Controller for handling user-related actions such as registration, login, and account management.
+ * Supports operations for both candidates and recruiters.
  */
 @Controller
 @RequestMapping
@@ -33,9 +33,9 @@ public class UserController {
   /**
    * Constructor with the specified services.
    *
-   * @param candidateService the service for managing candidate operations.
-   * @param recruiterService the service for managing recruiter operations.
-   * @param authenticationService the service for authentication and user context.
+   * @param candidateService      The service for managing candidate operations.
+   * @param recruiterService      The service for managing recruiter operations.
+   * @param authenticationService The service for authentication and user context.
    */
   @Autowired
   public UserController(CandidateService candidateService, RecruiterService recruiterService,
@@ -48,8 +48,8 @@ public class UserController {
   /**
    * Displays the registration page for new users.
    *
-   * @param model the model to hold the user registration form data.
-   * @return the name of the registration view.
+   * @param model The model to hold the user registration form data.
+   * @return The name of the registration view.
    */
   @GetMapping("/register")
   public String register(Model model) {
@@ -60,8 +60,8 @@ public class UserController {
   /**
    * Saves a new user after registration based on their role (Candidate or Recruiter).
    *
-   * @param user the user details provided in the registration form.
-   * @return a redirect to the login page with a success flag.
+   * @param user The user details provided in the registration form.
+   * @return A redirect to the login page with a success flag.
    */
   @PostMapping("/register")
   public String saveUser(@ModelAttribute UserDTO user) {
@@ -77,7 +77,7 @@ public class UserController {
   /**
    * Displays the login page for users to authenticate.
    *
-   * @return the name of the login view.
+   * @return The name of the login view.
    */
   @GetMapping("/login")
   public String login() {
@@ -87,8 +87,8 @@ public class UserController {
   /**
    * Displays the account deletion confirmation page.
    *
-   * @param model the model to hold the user data for the deletion form.
-   * @return the name of the delete account view.
+   * @param model The model to hold the user data for the deletion form.
+   * @return The name of the delete account view.
    */
   @GetMapping("/delete-account")
   public String deleteAccountPage(Model model) {
@@ -97,13 +97,12 @@ public class UserController {
   }
 
   /**
-   * Deletes the current user's account after validating the provided password.
-   * Supports both candidates and recruiters based on the user type.
+   * Deletes the current user's account after validating the provided password. Supports both
+   * candidates and recruiters based on the user type.
    *
-   * @param password the user's password for verification.
-   * @param model the model to hold any error messages in case of failure.
-   * @param redirectAttributes attributes used to pass success messages after redirection.
-   * @return a redirect to the job ads page if successful, or the delete account page on failure.
+   * @param password The user's password for verification.
+   * @return A redirect to the job ads page with a success flag if the account was deleted
+   * successfully.
    */
   @PostMapping("/delete-account")
   public String deleteAccount(@RequestParam String password) {

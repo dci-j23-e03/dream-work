@@ -79,10 +79,10 @@ public abstract class User implements UserDetails {
    *
    * @param username the username of the user
    * @param password the password of the user
-   * @param name the first name of the user
+   * @param name     the first name of the user
    * @param lastname the last name of the user
-   * @param email the email address of the user
-   * @param role the role assigned to the user
+   * @param email    the email address of the user
+   * @param role     the role assigned to the user
    */
   protected User(String username, String password, String name, String lastname, String email,
       Role role) {
@@ -95,8 +95,7 @@ public abstract class User implements UserDetails {
   }
 
   /**
-   * Returns the authorities granted to the user.
-   * Currently, this method returns an empty list.
+   * Returns the authorities granted to the user. Currently, this method returns an empty list.
    *
    * @return a collection of granted authorities
    */

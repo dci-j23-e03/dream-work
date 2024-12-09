@@ -8,15 +8,15 @@ import lombok.Setter;
 
 /**
  * Data Transfer Object (DTO) for the JobAd entity
- *
- * This class is used for transferring JobAd data between service and controller.
- * It keeps the necessary fields with JobAd's information, such as
- * id, position, date, company, country, city, seniority, main tech stack and description.
- *
+ * <p>
+ * This class is used for transferring JobAd data between service and controller. It keeps the
+ * necessary fields with JobAd's information, such as id, position, date, company, country, city,
+ * seniority, main tech stack and description.
+ * <p>
  * It uses lombok annotations to generate getters, setters and a constructor with all arguments.
- *
- *This DTO class provides a simplified representation of the JabAd's details, typically used
- * for display purposes, or communication with external systems.
+ * <p>
+ * This DTO class provides a simplified representation of the JabAd's details, typically used for
+ * display purposes, or communication with external systems.
  */
 @Getter
 @Setter

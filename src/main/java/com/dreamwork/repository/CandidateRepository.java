@@ -7,10 +7,9 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Repository interface for managing Candidate entities.
- *
- * Provides methods for interacting with the database, such as finding candidates
- * by username or email. This interface extends JpaRepository to inherit
- * common CRUD operations.
+ * <p>
+ * Provides methods for interacting with the database, such as finding candidates by username or
+ * email. This interface extends JpaRepository to inherit common CRUD operations.
  */
 @Repository
 public interface CandidateRepository extends JpaRepository<Candidate, Long> {

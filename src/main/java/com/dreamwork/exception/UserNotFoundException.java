@@ -4,8 +4,8 @@ package com.dreamwork.exception;
  * Custom exception thrown when a user not found by username or email.
  * <p>
  * This exception extends RuntimeException and is used to indicate that the current operation cannot
- * be completed because the user is not found in system. It can be thrown when a user is missing
- * or unavailable.
+ * be completed because the user is not found in system. It can be thrown when a user is missing or
+ * unavailable.
  * <p>
  * The exception accepts a custom message that provides additional details about the error or the
  * specific condition that led to the exception being thrown.

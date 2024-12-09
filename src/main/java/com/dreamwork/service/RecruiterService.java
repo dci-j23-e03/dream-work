@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service class for managing recruiter operations
- * This class handles CRUD operations for candidates, authentication and logic integration
+ * Service class for managing recruiter operations This class handles CRUD operations for
+ * candidates, authentication and logic integration
  */
 @Service
 public class RecruiterService {
@@ -27,12 +27,12 @@ public class RecruiterService {
   private final AuthenticationService authenticationService;
 
   /**
-   * Constructor for dependencies
+   * Constructor for dependencies.
    *
-   * @param recruiterRepository Repository for managing recruiter entities.
-   * @param jobAdRepository Repository for managing JobAd entities.
-   * @param passwordEncoder Service for encoding password for security.
-   * @param authenticationService Service for managing authentication.
+   * @param recruiterRepository   repository for managing recruiter entities.
+   * @param jobAdRepository       repository for managing JobAd entities.
+   * @param passwordEncoder       service for encoding password for security.
+   * @param authenticationService service for managing authentication.
    */
   @Autowired
   public RecruiterService(RecruiterRepository recruiterRepository, JobAdRepository jobAdRepository,
@@ -46,8 +46,8 @@ public class RecruiterService {
   /**
    * Saves a new recruiter in database.
    *
-   * @param user The user details  in a UserDTO object.
-   * @throws UserAlreadyExistsException if the username or email already exists.
+   * @param user the user details in a UserDTO object
+   * @throws UserAlreadyExistsException if the username or email already exists
    */
   @Transactional
   public void saveRecruiter(UserDTO user) {
@@ -73,9 +73,10 @@ public class RecruiterService {
   /**
    * Updates the details of the currently logged-in recruiter.
    *
-   * @param updatedRecruiter The Recruiter object containing updated details.
-   * @param password         The current password of the recruiter for verification.
-   * @throws IncorrectPasswordException if the given password does not match the recruiter's current password.
+   * @param updatedRecruiter the Recruiter object containing updated details
+   * @param password         the current password of the recruiter for verification
+   * @throws IncorrectPasswordException if the given password does not match the recruiter's current
+   *                                    password
    */
   @Transactional
   public void updateRecruiter(Recruiter updatedRecruiter, String password) {
@@ -99,12 +100,13 @@ public class RecruiterService {
   }
 
   /**
-   * Deletes the currently logged-in recruiter from the system.
-   * Also removes all job ads associated with the recruiter.
+   * Deletes the currently logged-in recruiter from the system. Also removes all job ads associated
+   * with the recruiter.
    *
-   * @param deletePassword The current password of the recruiter for verification.
-   * @return true if the deletion is successful.
-   * @throws IncorrectPasswordException if the given password does not match the recruiter's current password.
+   * @param deletePassword the current password of the recruiter for verification
+   * @return true if the deletion is successful
+   * @throws IncorrectPasswordException if the given password does not match the recruiter's current
+   *                                    password
    */
   @Transactional
   public boolean deleteRecruiter(String deletePassword) {
