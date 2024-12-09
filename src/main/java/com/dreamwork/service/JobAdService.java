@@ -77,9 +77,21 @@ public class JobAdService {
   }
 
   /**
-   * Retrieves all job advertisements.
+   * Retrieves a paginated list of job ads filtered by the specified criteria.
    *
-   * @return A list of JobAdDTO with all job ads.
+   * This method filters job ads based on seniority, city, main technology stack, and date.
+   * The results are returned as a `Page` of `JobAdDTO` objects.
+   *
+   * The method is annotated with `@Transactional(readOnly = true)`, indicating it performs
+   * read-only database operations.
+   *
+   * @param seniority      the seniority level to filter by (e.g., JUNIOR, MID, SENIOR)
+   * @param city           the city to filter by; may be null if not filtering by city
+   * @param mainTechStack  the main technology stack to filter by; may be null if not filtering by technology
+   * @param date           the date to filter by; may be null if not filtering by date
+   * @param page           the page number (0-based) for pagination
+   * @param size           the size of the page (number of results per page)
+   * @return a Page of JobAdDTO objects that match the specified filters
    */
   @Transactional(readOnly = true)
   public Page<JobAdDTO> getFilteredJobAds(Seniority seniority, String city, String mainTechStack,

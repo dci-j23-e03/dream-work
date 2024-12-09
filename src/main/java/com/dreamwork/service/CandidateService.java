@@ -151,8 +151,7 @@ public class CandidateService {
   }
 
   /**
-   * this method retrieves all candidates who applid for a specific job ad
-   *
+   * this method retrieves all candidates who applied for a specific job ad
    *
    * @param jobAdId the ID of the job ad
    * @return list of CandidateDTO objects representing the candidates

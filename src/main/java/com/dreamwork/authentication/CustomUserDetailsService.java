@@ -16,12 +16,26 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * This service is responsible for loading user details based on the username, and it checks for
+ * both Candidate and Recruiter entities.
+ * <p>
+ * This service interacts with CandidateRepository and RecruiterRepository to retrieve user data and
+ * constructs the necessary UserDetails object. The user roles are dynamically assigned based on the
+ * Role of the user.
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
   private final CandidateRepository candidateRepository;
   private final RecruiterRepository recruiterRepository;
 
+  /**
+   * Constructs a new CustomUserDetailsService instance with the given repositories.
+   *
+   * @param candidateRepository the CandidateRepository to access candidate data.
+   * @param recruiterRepository the RecruiterRepository to access recruiter data.
+   */
   @Autowired
   public CustomUserDetailsService(CandidateRepository candidateRepository,
       RecruiterRepository recruiterRepository) {
@@ -29,6 +43,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     this.recruiterRepository = recruiterRepository;
   }
 
+  /**
+   * Loads the user details by the provided username.
+   *
+   * @param username Username of user to load.
+   * @return a UserDetails object for the authenticated user.
+   * @throws UsernameNotFoundException if no user with provided username found.
+   */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     Optional<Candidate> candidateOpt = candidateRepository.findByUsername(username);
