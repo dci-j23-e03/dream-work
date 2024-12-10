@@ -451,6 +451,6 @@ We would like to express our gratitude to the following libraries, frameworks, a
 - Mockito
 - PostgreSQL 16
 
-
+We would like to express our heartfelt gratitude to each other for the dedication, teamwork, and effort we have put into this project. This project was a collective effort, and it would not have been possible without each member’s commitment and collaboration. The shared learning, mutual support, and problem-solving mindset were instrumental in completing this work successfully.
 
 We also thank any other open-source contributors whose work made the development of this project possible.
