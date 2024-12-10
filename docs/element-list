@@ -1,0 +1,10 @@
+com.dreamwork
+com.dreamwork.authentication
+com.dreamwork.controller
+com.dreamwork.dto
+com.dreamwork.exception
+com.dreamwork.model.job
+com.dreamwork.model.user
+com.dreamwork.repository
+com.dreamwork.security
+com.dreamwork.service
